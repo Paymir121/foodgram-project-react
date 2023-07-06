@@ -21,11 +21,7 @@ class Ingredients(AbstractSlugModel):
         verbose_name='Ингредиенты',
         help_text='Введите название ингридиента',
     )
-    count = models.PositiveSmallIntegerField(
-        verbose_name='Количество',
-    )
-
-    units = models.TextField(verbose_name='Единицы измерения')
+    measurement_unit = models.TextField(verbose_name='Единицы измерения')
 
 
 class Tag(AbstractSlugModel):
@@ -35,7 +31,7 @@ class Tag(AbstractSlugModel):
         verbose_name='Тег',
         help_text='Введите название тега',
     )
-    HEX_code = models.CharField(max_length=16)
+    color = models.CharField(max_length=16)
 
 
 class Recipy(models.Model):
@@ -60,9 +56,8 @@ class Recipy(models.Model):
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
     ingredients = models.ManyToManyField(Ingredients,
                                          through='RecipyIngredients')
-    tag = models.ManyToManyField(Tag, through='RecipyTag')
-    time_cooking = models.IntegerField()
-
+    tags = models.ManyToManyField(Tag, through='RecipyTag')
+    cooking_time = models.IntegerField()
 
     def __str__(self):
         return self.text[:20]

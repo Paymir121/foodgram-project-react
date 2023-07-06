@@ -1,52 +1,31 @@
-import uuid
-
-from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework.permissions import AllowAny
+from rest_framework import filters, mixins, status
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from users.models import User
 
-from .utils import send_mail
-from .permissions import (IsAdmin,)
-from .serializers import (ConfirmationCodeSerializer,
-                          RegistrationSerializer,
-                          UserSerializer)
-
-
-class RegistrationAPIView(APIView):
-    permission_classes = (AllowAny,)
-
-    def post(self, request):
-        serializer = RegistrationSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        confirmation_code = str(uuid.uuid4())
-        user, _ = User.objects.get_or_create(
-            email=serializer.validated_data['email'],
-            username=serializer.validated_data['username'],)
-        send_mail(user.email, confirmation_code)
-        user.confirmation_code = confirmation_code
-        user.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+from .serializers import UserSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer
 
 
 class UserViewSet(ModelViewSet):
-    lookup_field = 'username'
+    lookup_field = 'id'
     queryset = User.objects.all().order_by('-id')
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    search_fields = ('=username',)
+    search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(
         detail=False,
         methods=['get', 'patch'],
-        permission_classes=[AllowAny, ],
+        permission_classes=[IsAuthenticated, ],
     )
     def me(self, request):
         user = get_object_or_404(User, username=self.request.user)
@@ -56,19 +35,33 @@ class UserViewSet(ModelViewSet):
             context={'request': request})
         serializer.is_valid(raise_exception=True)
         if request.method == 'PATCH':
-            serializer.save(role=user.role)
+            serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def get_jwt_token(request):
-    serializer = ConfirmationCodeSerializer(data=request.data)
-    if not serializer.is_valid():
+class UpdatePassword(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Check old password
+            old_password = serializer.data.get("current_password")
+            if not self.object.check_password(old_password):
+                return Response({"current_password": ["Wrong password."]}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    user_obj = get_object_or_404(User,
-                                 username=serializer.validated_data['username']
-                                 )
-    token = AccessToken.for_user(user_obj)
-    return Response(
-        {'token': str(token)}, status=status.HTTP_200_OK)
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

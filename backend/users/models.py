@@ -5,20 +5,9 @@ from django.contrib.auth.validators import ASCIIUsernameValidator
 from .validators import validator_username
 
 
-class UserRole(models.TextChoices):
-    USER = 'user', 'Пользователь'
-    MODERATOR = 'moderator', 'Модератор'
-    ADMIN = 'admin', 'Администратор'
-
-
 class User(AbstractUser):
 
-    role = models.TextField(max_length=30,
-                            choices=UserRole.choices,
-                            default=UserRole.USER,
-                            verbose_name='Роль')
     bio = models.TextField('Биография', null=False, blank=True)
-    confirmation_code = models.TextField(blank=True, null=True)
     email = models.EmailField(
         'Почта',
         unique=True,
@@ -28,6 +17,9 @@ class User(AbstractUser):
                                 max_length=150,
                                 validators=[ASCIIUsernameValidator(),
                                             validator_username, ])
+    first_name = models.CharField(max_length=150,)
+    last_name = models.CharField(max_length=150,)
+    password = models.CharField(max_length=150,)
 
     class Meta:
         constraints = [
@@ -38,12 +30,3 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
-    @property
-    def is_admin(self):
-        return (self.is_superuser
-                or self.role == UserRole.ADMIN
-                or self.is_staff)
-
-    @property
-    def is_moder(self):
-        return self.role == UserRole.MODERATOR

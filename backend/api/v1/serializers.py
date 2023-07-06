@@ -1,20 +1,28 @@
 from django.contrib.auth.validators import ASCIIUsernameValidator
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 from users.models import User
-from users.validators import validator_username
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer 
+from django.shortcuts import get_object_or_404 
+from django.contrib.auth.password_validation import validate_password
 
 
-class RegistrationSerializer(serializers.Serializer):
+class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, max_length=150)
     username = serializers.CharField(required=True,
                                      max_length=150,
-                                     validators=[ASCIIUsernameValidator(),
-                                                 validator_username])
+                                     validators=[ASCIIUsernameValidator(),])
+    first_name = serializers.CharField(required=True, max_length=150,)
+    last_name = serializers.CharField(required=True, max_length=150,)
+    password = serializers.CharField(required=True, max_length=150, write_only=True)
+    # id = 
 
     class Meta:
-        fields = ['email', 'username', ]
+        model = User
+        fields = ['email', 'username', 'password', 'first_name', 'last_name', 'id']
 
+    def create(self, validated_data):
+        return User.objects.create(**validated_data)
+    
     def validate(self, data):
         if User.objects.filter(username=data['username'],
                                email=data['email']).exists():
@@ -26,36 +34,25 @@ class RegistrationSerializer(serializers.Serializer):
         return data
 
 
-class UserSerializer(serializers.ModelSerializer):
+class ChangePasswordSerializer(serializers.Serializer):
+    """
+    Serializer for password change endpoint.
+    """
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
 
-    class Meta:
-        model = User
-        fields = ['email',
-                  'username',
-                  'first_name',
-                  'last_name',
-                  'role',
-                  'bio'
-                  ]
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
+  
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer): 
 
-    def validate(self, data):
-        if 'username' in data:
-            if User.objects.filter(username=data['username']):
-                raise serializers.ValidationError('такой user уже есть!')
-        if 'email' in data:
-            if User.objects.filter(email=data['email']):
-                raise serializers.ValidationError(
-                    'Такой email уже есть!')
-        return data
+    def validate(self, attrs): 
+        self.user = get_object_or_404(User, username=attrs["username"]) 
+        if self.user.password == attrs["password"]: 
+            token = self.get_token(self.user) 
+            access_token = str(token.access_token) 
+            return {'access token': access_token, 
 
-
-class ConfirmationCodeSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
-    confirmation_code = serializers.CharField(required=True)
-
-    def validate(self, attrs):
-        user_obj = get_object_or_404(User, username=attrs["username"])
-        if user_obj.confirmation_code != attrs["confirmation_code"]:
-            raise serializers.ValidationError({
-                "confirmation_code": "Неправильный код!"})
-        return attrs
+                    } 
+        raise serializers.ValidationError('неправильный password!') 

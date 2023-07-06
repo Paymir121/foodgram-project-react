@@ -1,24 +1,19 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (RegistrationAPIView,
-                    UserViewSet,
-                    get_jwt_token,
-                    )
+from .views import UserViewSet, MyTokenObtainPairView, UpdatePassword
 
 app_name = "api"
 
 router_v1 = DefaultRouter()
 router_v1.register('users', UserViewSet, basename='users')
 
-auth_urlpatterns = [
-    path('signup/', RegistrationAPIView.as_view()),
-    path('token/',
-         get_jwt_token,
-         name='token_obtain_pair'),
-]
-
 urlpatterns = [
+    path('users/set_password/',
+         UpdatePassword.as_view(),
+         name='set password'),
     path('', include(router_v1.urls)),
-    path('auth/', include(auth_urlpatterns))
+    path('auth/token/',
+         MyTokenObtainPairView.as_view(),
+         name='token_obtain_pair'),
 ]
