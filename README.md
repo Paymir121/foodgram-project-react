@@ -7,7 +7,7 @@
 Python 3.7 Django 3.2.16
 
 ### Авторы
-Nikki Nikonor, MichaelMakeev, NikolaySin и Яндекс Практикум
+Nikki Nikonor и Яндекс Практикум
 
 ## Установка
 Как развернуть проект на локальной машине;

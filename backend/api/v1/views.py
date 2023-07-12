@@ -9,8 +9,44 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from users.models import User
+from recipy.models import Tag, Ingredient, Recipy
+from .permissions import (IsAdmin,
+                          IsAdminOrReadOnly,
+                          IsAuthorAdminModerOrReadOnly)
 
-from .serializers import UserSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+
+
+class TagViewSet(ModelViewSet):
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = None
+    lookup_field = 'id'
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+
+
+class RecipyViewSet(ModelViewSet):
+    serializer_class = RecipyReadSerializer
+    permission_classes = (IsAuthenticated,)
+    queryset = Recipy.objects.all()
+
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return RecipyReadSerializer
+        return RecipyWriteSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+
+class IngredientViewSet(ModelViewSet):
+    lookup_field = 'id'
+    pagination_class = None
+    permission_classes = (IsAdminOrReadOnly,)
+    serializer_class = IngredientSerializer
+    queryset = Ingredient.objects.all()
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    search_fields = ('=name',)
 
 
 class UserViewSet(ModelViewSet):

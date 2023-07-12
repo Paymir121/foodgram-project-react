@@ -14,11 +14,11 @@ class AbstractSlugModel(models.Model):
         return self.name
 
 
-class Ingredients(AbstractSlugModel):
+class Ingredient(AbstractSlugModel):
 
     name = models.CharField(
         max_length=256,
-        verbose_name='Ингредиенты',
+        verbose_name='Название ингредиентов',
         help_text='Введите название ингридиента',
     )
     measurement_unit = models.TextField(verbose_name='Единицы измерения')
@@ -54,8 +54,8 @@ class Recipy(models.Model):
     text = models.TextField(
         verbose_name='Текст',)
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
-    ingredients = models.ManyToManyField(Ingredients,
-                                         through='RecipyIngredients')
+    ingredients = models.ManyToManyField(Ingredient,
+                                         through='RecipyIngredient')
     tags = models.ManyToManyField(Tag, through='RecipyTag')
     cooking_time = models.IntegerField()
 
@@ -63,9 +63,10 @@ class Recipy(models.Model):
         return self.text[:20]
 
 
-class RecipyIngredients(models.Model):
+class RecipyIngredient(models.Model):
     recipy = models.ForeignKey(Recipy, on_delete=models.CASCADE)
-    ingredients = models.ForeignKey(Ingredients, on_delete=models.CASCADE)
+    ingredients = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=1)
 
     def __str__(self):
         return f'{self.recipy} {self.ingredients}'
