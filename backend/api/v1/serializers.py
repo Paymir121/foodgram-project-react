@@ -113,12 +113,9 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         return ingredients
 
 
-class IngredientWriteRecipySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Ingredient
-        fields = ('id',
-                  )
+class IngredientWriteRecipySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    amount = serializers.IntegerField()
 
 
 class RecipyWriteSerializer(serializers.ModelSerializer):
@@ -142,26 +139,22 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
                   'text',
                   'cooking_time',
                   )
-    
-    # def get_ingredients(self, obj):
-    #     ingredients = obj.ingredients.values()
-    #     print(obj.ingredients.values())
-    #     for ingredient in ingredients:
-    #         print(ingredient)
-    #         recipy_ingredients = RecipyIngredient.objects.create(recipy=obj, ingredients=ingredient['id'], amount=ingredient['amount'])
-    #     print(obj.ingredients.values())
-    #     return 1
+
     def create(self, validated_data):
+        # print(validated_data)
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         recipy = Recipy.objects.create(**validated_data)
         recipy.tags.set(tags)
+        print(ingredients)
         for ingredient in ingredients:
+            amount = ingredient.pop('amount')
+            k = Ingredient.objects.get(id=ingredient['id'])
+            print(amount, ingredient['id'], k)
             RecipyIngredient.objects.create(
-                ingredient=Ingredient.objects.filter(
-                    id=ingredient['id']
-                ).first(),
+                ingredients=k,
                 recipy=recipy,
-                amount=ingredient['amount']
+                # amount=amount
             )
+        print(recipy)
         return recipy
