@@ -110,7 +110,6 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             amount = RecipyIngredient.objects.get(recipy=obj, ingredients=ingredient['id']).amount
             ingredient['amount'] = amount
-            print(ingredient)
         return ingredients
 
 
@@ -118,9 +117,7 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
-    ingredients = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True
-    )
+    ingredients = serializers.SerializerMethodField()
     name = serializers.CharField(required=True, max_length=150,)
     image = Base64ImageField(required=True, allow_null=True)
     text = serializers.CharField(required=True)
@@ -136,3 +133,9 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
                   'text',
                   'cooking_time',
                   )
+    
+    def get_ingredients(self, obj):
+        ingredients = obj.ingredients.values()
+        for ingredient in ingredients:
+            recipy_ingredients = RecipyIngredient.objects.create( recipy=obj, ingredients=ingredient['id'], amount=ingredient['amount'])
+        return obj.ingredients

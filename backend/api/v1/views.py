@@ -27,7 +27,7 @@ class TagViewSet(ModelViewSet):
 
 class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     queryset = Recipy.objects.all()
 
     def get_serializer_class(self):
