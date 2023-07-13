@@ -113,13 +113,22 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         return ingredients
 
 
+class IngredientWriteRecipySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Ingredient
+        fields = ('id',
+                  )
+
+
 class RecipyWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
-    ingredients = serializers.SerializerMethodField()
+    # ingredients = IngredientSerializer(many=True)
+    ingredients = IngredientWriteRecipySerializer(many=True)
     name = serializers.CharField(required=True, max_length=150,)
-    image = Base64ImageField(required=True, allow_null=True)
+    image = Base64ImageField(required=False, allow_null=True)
     text = serializers.CharField(required=True)
     cooking_time = serializers.IntegerField()
 
@@ -134,8 +143,25 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
                   'cooking_time',
                   )
     
-    def get_ingredients(self, obj):
-        ingredients = obj.ingredients.values()
+    # def get_ingredients(self, obj):
+    #     ingredients = obj.ingredients.values()
+    #     print(obj.ingredients.values())
+    #     for ingredient in ingredients:
+    #         print(ingredient)
+    #         recipy_ingredients = RecipyIngredient.objects.create(recipy=obj, ingredients=ingredient['id'], amount=ingredient['amount'])
+    #     print(obj.ingredients.values())
+    #     return 1
+    def create(self, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        recipy = Recipy.objects.create(**validated_data)
+        recipy.tags.set(tags)
         for ingredient in ingredients:
-            recipy_ingredients = RecipyIngredient.objects.create( recipy=obj, ingredients=ingredient['id'], amount=ingredient['amount'])
-        return obj.ingredients
+            RecipyIngredient.objects.create(
+                ingredient=Ingredient.objects.filter(
+                    id=ingredient['id']
+                ).first(),
+                recipy=recipy,
+                amount=ingredient['amount']
+            )
+        return recipy
