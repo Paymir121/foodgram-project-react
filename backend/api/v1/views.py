@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
-from users.models import User
+from users.models import User, Follow
 from recipy.models import Tag, Ingredient, Recipy
 from .permissions import (IsAdmin,
                           IsAdminOrReadOnly,
@@ -73,6 +73,25 @@ class UserViewSet(ModelViewSet):
         if request.method == 'PATCH':
             serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(
+        detail=False,
+        methods=['get', 'post'],
+        permission_classes=[IsAuthenticated, ],
+    )
+    def subscriptions(self, request):
+        print(request, self)
+        # author = get_object_or_404(User, username=request.username)
+        # user = get_object_or_404(User, username=self.request.user)
+        # # serializer = UserSerializer(
+        # #     user, data=request.data,
+        # #     partial=True,
+        # #     context={'request': request})
+        # # if request.method == 'POST':
+        # #     serializer.save()
+        # Follow.objects.create(author=author, user=user)
+        # serializer.is_valid(raise_exception=True)
+        return Response(status=status.HTTP_200_OK)
 
 
 class UpdatePassword(APIView):

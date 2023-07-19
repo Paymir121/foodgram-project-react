@@ -141,20 +141,40 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
                   )
 
     def create(self, validated_data):
-        # print(validated_data)
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         recipy = Recipy.objects.create(**validated_data)
         recipy.tags.set(tags)
-        print(ingredients)
         for ingredient in ingredients:
             amount = ingredient.pop('amount')
-            k = Ingredient.objects.get(id=ingredient['id'])
-            print(amount, ingredient['id'], k)
+            current_ingredient = Ingredient.objects.get(id=ingredient['id'])
             RecipyIngredient.objects.create(
-                ingredients=k,
+                ingredients=current_ingredient,
                 recipy=recipy,
-                # amount=amount
+                amount=amount
             )
-        print(recipy)
         return recipy
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        # recipy.tags.set(tags)
+        instance.tags.set(tags)
+        print(instance)
+        print(validated_data)
+        for ingredient in ingredients:
+            amount = ingredient.pop('amount')
+            current_ingredient = Ingredient.objects.get(id=ingredient['id'])
+            RecipyIngredient.objects.update_or_create(
+                ingredients=current_ingredient,
+                recipy=instance,
+            )
+
+            ingredient_in_recipy = RecipyIngredient.objects.get(
+                ingredients=current_ingredient,
+                recipy=instance,)
+            print(ingredient_in_recipy.amount)
+            ingredient_in_recipy.amount = amount
+            ingredient_in_recipy.save()
+        return super().update(instance, validated_data)
