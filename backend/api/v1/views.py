@@ -58,6 +58,13 @@ class UserViewSet(ModelViewSet):
     search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return self.serializer_class
+        elif self.action == "subscriptions":
+            return UserSerializer
+        else:
+            return self.serializer_class
     @action(
         detail=False,
         methods=['get', 'patch'],
@@ -76,27 +83,41 @@ class UserViewSet(ModelViewSet):
 
     @action(
         detail=False,
-        methods=['get', 'post'],
+        methods=['get'],
         permission_classes=[IsAuthenticated, ],
     )
     def subscriptions(self, request):
         user = get_object_or_404(User, username=self.request.user)
         follows = Follow.objects.filter(user=user)
-        print(*follows)
-        print(request.data)
-        print(self.request.user)
-        # author = get_object_or_404(User, username=request.username)
-        # user = get_object_or_404(User, username=self.request.user)
-        serializer = UserSerializer(
-            [*follows],
-            context={'request': request})
-        # if request.method == 'POST':
-        #     serializer.save()
-        # Follow.objects.create(author=author, user=user)
+        followers = []
+        for follow in follows:
+            follower = User.objects.get(id=follow.author.id)
+            followers.append(follower)
+        serializer = self.get_serializer(followers, many=True)
+
         serializer.is_valid(raise_exception=True)
+        if request.method == 'PATCH':
+            serializer.save()
+
         return Response(
             serializer.data,
             status=status.HTTP_200_OK)
+    
+    @action(
+    detail=True,
+    methods=['post'],
+    permission_classes=[IsAuthenticated, ],
+    url_path=r'subscribe'
+    )
+    def subscribe(self, request, id=None):
+        user = get_object_or_404(User, username=self.request.user)
+        print(id)
+        author = get_object_or_404(User, id=id)
+        Follow.objects.create(author=author, user=user)
+        serializer = UserSerializer(author)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 
 class UpdatePassword(APIView):
