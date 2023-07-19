@@ -80,18 +80,23 @@ class UserViewSet(ModelViewSet):
         permission_classes=[IsAuthenticated, ],
     )
     def subscriptions(self, request):
-        print(request, self)
+        user = get_object_or_404(User, username=self.request.user)
+        follows = Follow.objects.filter(user=user)
+        print(*follows)
+        print(request.data)
+        print(self.request.user)
         # author = get_object_or_404(User, username=request.username)
         # user = get_object_or_404(User, username=self.request.user)
-        # # serializer = UserSerializer(
-        # #     user, data=request.data,
-        # #     partial=True,
-        # #     context={'request': request})
-        # # if request.method == 'POST':
-        # #     serializer.save()
+        serializer = UserSerializer(
+            [*follows],
+            context={'request': request})
+        # if request.method == 'POST':
+        #     serializer.save()
         # Follow.objects.create(author=author, user=user)
-        # serializer.is_valid(raise_exception=True)
-        return Response(status=status.HTTP_200_OK)
+        serializer.is_valid(raise_exception=True)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK)
 
 
 class UpdatePassword(APIView):
