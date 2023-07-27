@@ -12,5 +12,7 @@ python-dotenv==0.19.0
 Pillow==9.0.0
 webcolors==1.11.1
 psycopg2-binary==2.9.3
+django-cors-headers==4.1.0
+
 
 
