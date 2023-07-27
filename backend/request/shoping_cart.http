@@ -1,6 +1,5 @@
 
-
-GET http://127.0.0.1:8000/api/users/subscriptions/
+POST http://127.0.0.1:8000/api/recipes/2/shopping_cart/
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
 
@@ -8,7 +7,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 ###
-POST http://127.0.0.1:8000/api/users/3/subscribe/
+DELETE http://127.0.0.1:8000/api/recipes/1/shopping_cart/
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
 
@@ -16,8 +15,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiY
 }
 
 ###
-delete http://127.0.0.1:8000/api/users/3/subscribe/
-Content-Type: application/json
+get http://127.0.0.1:8000/api/recipes/download_shopping_cart/
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
 
 {

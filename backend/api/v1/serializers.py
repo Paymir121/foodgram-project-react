@@ -1,7 +1,7 @@
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from rest_framework import serializers
 from users.models import User
-from recipy.models import Tag, Recipy, Ingredient, RecipyIngredient
+from recipy.models import Tag, Recipy, Ingredient, RecipyIngredient, Favorite
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer 
 from django.shortcuts import get_object_or_404 
 from django.contrib.auth.password_validation import validate_password
@@ -82,6 +82,11 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit')
 
 
+class IngredientWriteRecipySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    amount = serializers.IntegerField()
+
+
 class RecipyReadSerializer(serializers.ModelSerializer):
     tags = TagSerializer(required=True, many=True)
     author = serializers.SlugRelatedField(
@@ -113,16 +118,11 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         return ingredients
 
 
-class IngredientWriteRecipySerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    amount = serializers.IntegerField()
-
 
 class RecipyWriteSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
-    # ingredients = IngredientSerializer(many=True)
     ingredients = IngredientWriteRecipySerializer(many=True)
     name = serializers.CharField(required=True, max_length=150,)
     image = Base64ImageField(required=False, allow_null=True)
@@ -156,13 +156,9 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
         return recipy
 
     def update(self, instance, validated_data):
-        print(validated_data)
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        # recipy.tags.set(tags)
         instance.tags.set(tags)
-        print(instance)
-        print(validated_data)
         for ingredient in ingredients:
             amount = ingredient.pop('amount')
             current_ingredient = Ingredient.objects.get(id=ingredient['id'])
@@ -174,7 +170,12 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
             ingredient_in_recipy = RecipyIngredient.objects.get(
                 ingredients=current_ingredient,
                 recipy=instance,)
-            print(ingredient_in_recipy.amount)
             ingredient_in_recipy.amount = amount
             ingredient_in_recipy.save()
         return super().update(instance, validated_data)
+    
+
+class RecipyFavoriteReadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipy
+        fields = ('id', 'name', 'image', 'cooking_time')

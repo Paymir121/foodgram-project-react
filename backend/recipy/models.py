@@ -79,3 +79,50 @@ class RecipyTag(models.Model):
     def __str__(self):
         return f'{self.recipy} {self.tag}'
 
+
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='liker',
+        verbose_name='Избраник',
+    )
+    recipy = models.ForeignKey(
+        Recipy,
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        verbose_name='Избранное',
+    )
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+        unique_together = [['recipy', 'user']]
+
+    def __str__(self) -> str:
+        return f'{self.recipy}'
+    
+
+class ShoppingCart(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='shoper',
+        verbose_name='Покупатель',
+    )
+    recipy = models.ForeignKey(
+        Recipy,
+        on_delete=models.CASCADE,
+        related_name='purchase',
+        verbose_name='Покупки',
+    )
+
+    class Meta:
+        verbose_name = 'Покупки'
+        verbose_name_plural = 'покупки'
+        unique_together = [['recipy', 'user']]
+
+    def __str__(self) -> str:
+        return f'{self.recipy}'
+
+

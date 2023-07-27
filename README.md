@@ -17,7 +17,7 @@ Nikki Nikonor и Яндекс Практикум
 Клонируете репозиторий:
 
 ```bash
-git clone  git@github.com:Paymir121/foodgram-project-react.git
+        git clone  git@github.com:Paymir121/foodgram-project-react.git
 ``` 
 
 ### Cоздать и активировать виртуальное окружение:
@@ -36,21 +36,21 @@ python -m venv venv
 
 ### Установить зависимости из файла requirements.txt:
 ```
-python -m pip install --upgrade pip
-pip install -r requirements.txt
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 ```
 
 ### Выполнить миграции:
 ```
-cd backend
-python manage.py makemigrations
-python manage.py migrate
+        cd backend
+        python manage.py makemigrations
+        python manage.py migrate
 ```
 
 ### Запустить проект:
 ```
-cd backend
-python manage.py runserver
+        cd backend
+        python manage.py runserver
 ```
 
 ### Создать суперпользователя:

@@ -9,12 +9,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from users.models import User, Follow
-from recipy.models import Tag, Ingredient, Recipy
+from recipy.models import Tag, Ingredient, Recipy, Favorite, ShoppingCart
 from .permissions import (IsAdmin,
                           IsAdminOrReadOnly,
                           IsAuthorAdminModerOrReadOnly)
 
-from .serializers import UserSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+from .serializers import RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
 
 
 class TagViewSet(ModelViewSet):
@@ -37,6 +37,63 @@ class RecipyViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+    
+    @action(
+    detail=True,
+    methods=['post', 'delete'],
+    permission_classes=[IsAuthenticated, ],
+    url_path=r'favorite'
+    )
+    def favorite(self, request, pk=None):
+        user = get_object_or_404(User, username=self.request.user)
+        recipy = get_object_or_404(Recipy, id=pk)
+        if request.method == 'DELETE':
+            Favorite.objects.filter(recipy=recipy, user=user).delete()
+        if request.method == 'POST':
+            Favorite.objects.create(recipy=recipy, user=user)
+        serializer = RecipyFavoriteReadSerializer(recipy)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated, ],
+        url_path=r'shopping_cart'
+    )
+    def shopping_cart(self, request, pk=None):
+        user = get_object_or_404(User, username=self.request.user)
+        recipy = get_object_or_404(Recipy, id=pk)
+        if request.method == 'DELETE':
+            ShoppingCart.objects.filter(recipy=recipy, user=user).delete()
+        if request.method == 'POST':
+            ShoppingCart.objects.create(recipy=recipy, user=user)
+        serializer = RecipyFavoriteReadSerializer(recipy)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @action(
+        detail=False,
+        methods=['get',],
+        permission_classes=[IsAuthenticated, ],
+        url_path=r'download_shopping_cart'
+    )
+    def download_shopping_cart(self, request):
+        user = get_object_or_404(User, username=self.request.user)
+        shoping_carts = ShoppingCart.objects.filter(user=user)
+        ingredients_in_shopping_cart = dict()
+        for shoping_cart in shoping_carts:
+            ingredients_in_recipy = RecipyIngredient.objects.filter(recipy=shoping_cart.recipy)
+            for ingredient_in_recipy in ingredients_in_recipy:
+                name = ingredient_in_recipy.ingredients.name
+                amount = ingredient_in_recipy.amount
+                measurement_unit = ingredient_in_recipy.ingredients.measurement_unit
+                if name not in ingredients_in_shopping_cart:
+                    ingredients_in_shopping_cart[name] = {'amount': amount,
+                                                        'measurement_unit': measurement_unit}
+                else:
+                    ingredients_in_shopping_cart[name]['amount'] = ingredients_in_shopping_cart[name]['amount'] + amount
+
+
+        return Response(status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(ModelViewSet):
@@ -95,8 +152,8 @@ class UserViewSet(ModelViewSet):
             followers.append(follower)
         serializer = self.get_serializer(followers, many=True)
 
-        serializer.is_valid(raise_exception=True)
         if request.method == 'PATCH':
+            serializer.is_valid(raise_exception=True)
             serializer.save()
 
         return Response(
@@ -104,19 +161,17 @@ class UserViewSet(ModelViewSet):
             status=status.HTTP_200_OK)
     
     @action(
-    detail=True,
-    methods=['post'],
-    permission_classes=[IsAuthenticated, ],
-    url_path=r'subscribe'
+        detail=True,
+        methods=['post'],
+        permission_classes=[IsAuthenticated, ],
+        url_path=r'subscribe'
     )
     def subscribe(self, request, id=None):
         user = get_object_or_404(User, username=self.request.user)
-        print(id)
         author = get_object_or_404(User, id=id)
         Follow.objects.create(author=author, user=user)
         serializer = UserSerializer(author)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 
