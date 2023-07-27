@@ -24,7 +24,8 @@ class Ingredient(AbstractSlugModel):
     measurement_unit = models.TextField(verbose_name='Единицы измерения')
 
     class Meta:
-        verbose_name = 'Ингредиенты'
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
 
 class Tag(AbstractSlugModel):
@@ -37,7 +38,8 @@ class Tag(AbstractSlugModel):
     color = models.CharField(max_length=16)
 
     class Meta:
-        verbose_name = 'Таги'
+        verbose_name = 'Таг'
+        verbose_name_plural = 'Таги'
 
 
 class Recipy(models.Model):
@@ -66,7 +68,8 @@ class Recipy(models.Model):
     cooking_time = models.IntegerField()
 
     class Meta:
-        verbose_name = 'Рецепты'
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.text[:20]
@@ -78,7 +81,8 @@ class RecipyIngredient(models.Model):
     amount = models.IntegerField(default=1)
 
     class Meta:
-        verbose_name = 'Ингредиенты в рецептах'
+        verbose_name = 'Ингредиент в рецепте'
+        verbose_name_plural = 'Ингредиенты в рецептах'
 
     def __str__(self):
         return f'{self.recipy} {self.ingredients}'
@@ -89,7 +93,8 @@ class RecipyTag(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
     class Meta:
-        verbose_name = 'Таги в рецептах'
+        verbose_name = 'Таг в рецепте'
+        verbose_name_plural = 'Таги в рецептах'
 
     def __str__(self):
         return f'{self.recipy} {self.tag}'
@@ -111,7 +116,7 @@ class Favorite(models.Model):
 
     class Meta:
         verbose_name = 'Избранное'
-        verbose_name_plural = 'Избранное'
+        verbose_name_plural = 'Избранные'
         unique_together = [['recipy', 'user']]
 
     def __str__(self) -> str:
@@ -133,8 +138,8 @@ class ShoppingCart(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Покупки'
-        verbose_name_plural = 'покупки'
+        verbose_name = 'Покупка'
+        verbose_name_plural = 'Покупки'
         unique_together = [['recipy', 'user']]
 
     def __str__(self) -> str:
