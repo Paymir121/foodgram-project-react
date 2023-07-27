@@ -8,6 +8,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+import csv
+from django.http import HttpResponse
 from users.models import User, Follow
 from recipy.models import Tag, Ingredient, Recipy, Favorite, ShoppingCart
 from .permissions import (IsAdmin,
@@ -79,21 +81,29 @@ class RecipyViewSet(ModelViewSet):
     def download_shopping_cart(self, request):
         user = get_object_or_404(User, username=self.request.user)
         shoping_carts = ShoppingCart.objects.filter(user=user)
-        ingredients_in_shopping_cart = dict()
+        ingredients_in_shopping_cart = (dict())
+        response = HttpResponse(content_type="text/csv",
+                        headers={"Content-Disposition": 'attachment; filename="somefilename.csv"'},)
+        writer = csv.writer(response)
         for shoping_cart in shoping_carts:
             ingredients_in_recipy = RecipyIngredient.objects.filter(recipy=shoping_cart.recipy)
             for ingredient_in_recipy in ingredients_in_recipy:
                 name = ingredient_in_recipy.ingredients.name
                 amount = ingredient_in_recipy.amount
                 measurement_unit = ingredient_in_recipy.ingredients.measurement_unit
+
                 if name not in ingredients_in_shopping_cart:
                     ingredients_in_shopping_cart[name] = {'amount': amount,
                                                         'measurement_unit': measurement_unit}
                 else:
-                    ingredients_in_shopping_cart[name]['amount'] = ingredients_in_shopping_cart[name]['amount'] + amount
+                    ingredients_in_shopping_cart[name]['amount']  += amount
+        for name in ingredients_in_shopping_cart:
+            amount = ingredients_in_shopping_cart[name]['amount']
+            measurement_unit = ingredients_in_shopping_cart[name]['measurement_unit']
+            writer.writerow([name, amount, measurement_unit])
+        ShoppingCart.objects.filter(user=user).delete()
+        return response
 
-
-        return Response(status=status.HTTP_200_OK)
 
 
 class IngredientViewSet(ModelViewSet):
