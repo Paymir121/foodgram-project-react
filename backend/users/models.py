@@ -21,13 +21,20 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=150,)
     password = models.CharField(max_length=150,)
 
+    # @property
+    # def token(self):
+    #     """
+    #     Позволяет получить токен пользователя путем вызова user.token, вместо
+    #     user._generate_jwt_token(). Декоратор @property выше делает это
+    #     возможным. token называется "динамическим свойством".
+    #     """
+    #     return self._generate_jwt_token()
+    
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=['username', 'email'], name='unique_user')
         ]
-
-    class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 

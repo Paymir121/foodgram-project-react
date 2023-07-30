@@ -15,8 +15,9 @@ from recipy.models import Tag, Ingredient, Recipy, Favorite, ShoppingCart
 from .permissions import (IsAdmin,
                           IsAdminOrReadOnly,
                           IsAuthorAdminModerOrReadOnly)
+from rest_framework_simplejwt.tokens import AccessToken
 
-from .serializers import RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, MyTokenObtainPairSerializer, ChangePasswordSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+from .serializers import ConfirmationUserTokenSerializer, RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, ChangePasswordSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
 
 
 class TagViewSet(ModelViewSet):
@@ -41,10 +42,10 @@ class RecipyViewSet(ModelViewSet):
         serializer.save(author=self.request.user)
     
     @action(
-    detail=True,
-    methods=['post', 'delete'],
-    permission_classes=[IsAuthenticated, ],
-    url_path=r'favorite'
+        detail=True,
+        methods=['post', 'delete'],
+        permission_classes=[IsAuthenticated, ],
+        url_path=r'favorite'
     )
     def favorite(self, request, pk=None):
         user = get_object_or_404(User, username=self.request.user)
@@ -103,7 +104,6 @@ class RecipyViewSet(ModelViewSet):
             writer.writerow([name, amount, measurement_unit])
         ShoppingCart.objects.filter(user=user).delete()
         return response
-
 
 
 class IngredientViewSet(ModelViewSet):
@@ -184,7 +184,6 @@ class UserViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 class UpdatePassword(APIView):
     permission_classes = (IsAuthenticated, )
 
@@ -209,5 +208,16 @@ class UpdatePassword(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer
+
+@api_view(['POST', 'get'])
+@permission_classes([AllowAny])
+def get_jwt_token(request):
+    serializer = ConfirmationUserTokenSerializer(data=request.data)
+    serializer.is_valid()
+    user_obj = get_object_or_404(User,
+                                 email="nikox122@mail.ru",
+                                 password="456852Zx"
+                                 )
+    token = AccessToken.for_user(user_obj)
+    return Response(
+        {'auth_token': str(token)}, status=status.HTTP_200_OK)

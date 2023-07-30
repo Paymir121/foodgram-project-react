@@ -2,12 +2,14 @@ from django.contrib.auth.validators import ASCIIUsernameValidator
 from rest_framework import serializers
 from users.models import User
 from recipy.models import Tag, Recipy, Ingredient, RecipyIngredient, Favorite
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import AccessToken
 from django.shortcuts import get_object_or_404 
 from django.contrib.auth.password_validation import validate_password
 import base64
 from django.core.files.base import ContentFile
-
+from rest_framework import filters, mixins, status
+from rest_framework.response import Response
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
@@ -56,17 +58,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         return value
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer): 
-
-    def validate(self, attrs): 
-        self.user = get_object_or_404(User, username=attrs["username"]) 
-        if self.user.password == attrs["password"]: 
-            token = self.get_token(self.user) 
-            access_token = str(token.access_token) 
-            return {'access token': access_token, 
-
-                    } 
-        raise serializers.ValidationError('неправильный password!')
+class ConfirmationUserTokenSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -116,7 +110,6 @@ class RecipyReadSerializer(serializers.ModelSerializer):
             amount = RecipyIngredient.objects.get(recipy=obj, ingredients=ingredient['id']).amount
             ingredient['amount'] = amount
         return ingredients
-
 
 
 class RecipyWriteSerializer(serializers.ModelSerializer):

@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import UserViewSet, MyTokenObtainPairView, UpdatePassword, TagViewSet, RecipyViewSet, IngredientViewSet
+from .views import get_jwt_token, UserViewSet, UpdatePassword, TagViewSet, RecipyViewSet, IngredientViewSet
 
 app_name = "api"
 
@@ -16,7 +16,7 @@ urlpatterns = [
          UpdatePassword.as_view(),
          name='set password'),
     path('', include(router_v1.urls)),
-    path('auth/token/',
-         MyTokenObtainPairView.as_view(),
+    path('auth/token/login/',
+         get_jwt_token,
          name='token_obtain_pair'),
 ]
