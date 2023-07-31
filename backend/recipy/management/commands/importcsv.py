@@ -21,4 +21,8 @@ class Command(BaseCommand):
         next(csv_reader)
         Ingredient.objects.bulk_create([Ingredient(name=ingredeint['name'],
                                                        measurement_unit=ingredeint['measurement_unit']) 
+<<<<<<< HEAD
                                                        for ingredeint in csv_reader]) 
+=======
+                                                       for ingredeint in csv_reader]) 
+>>>>>>> 2b48cad16c5a4e644a0fbf1609c30bd5484a0897
