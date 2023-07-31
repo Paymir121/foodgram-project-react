@@ -52,7 +52,6 @@ python -m venv venv
         cd backend
         python manage.py runserver
 ```
-
 ### Создать суперпользователя:
 ```
 python manage.py createsuperuser
@@ -111,3 +110,4 @@ POST  api/v1/auth/token/
 ```http
   /redoc
 ```
+docker compose exec backend python manage.py migrate

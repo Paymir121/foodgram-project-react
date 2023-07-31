@@ -3,8 +3,8 @@ POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
 {
-    "email": "nikox12@mail.ru",
-    "username": "nikjox",
+    "email": "nikox121212121@mail.ru",
+    "username": "nikox1312121111",
     "password": "456852Zx",
     "first_name": "kewk",
     "last_name": "wsq"
@@ -15,22 +15,18 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-    "email": [
-        "nikox122@mail.ru"
-    ],
-    "password": [
-        "456852Zx"
-    ]
+    "email": "nikox121212121@mail.ru",
+    "password": "456852Zx"
 }
 
 
 ###
-GET http://127.0.0.1:8000/api/users/me/
+GET http://127.0.0.1:8000/api/users/me/ 
 Content-Type: application/json
-Authorization: auth_token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkzMzEyODAxLCJpYXQiOjE2OTA3MjA4MDEsImp0aSI6IjI1MWY1YTFjYWRhNDRiMjU5YzkyNjhlNjMxNGNlYjViIiwidXNlcl9pZCI6OX0.LDZbH3QznFQ6GYSVAS8EAL6ruywioJDWkT8EP7uJOIs
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
-    "email": "nikox12@mail.ru",
+    # "email": "nikox1222222@mail.ru",
     "username": "nikjox",
     "password": "456852Zx",
     "first_name": "kewk",

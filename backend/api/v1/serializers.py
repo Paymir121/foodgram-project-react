@@ -10,6 +10,7 @@ import base64
 from django.core.files.base import ContentFile
 from rest_framework import filters, mixins, status
 from rest_framework.response import Response
+from djoser.serializers import UserSerializer
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
@@ -34,9 +35,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'username', 'password', 'first_name', 'last_name', 'id']
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        return User.objects.create(**validated_data)
+        user = User(
+            email=validated_data['email'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 
     def validate(self, data):
         if User.objects.filter(username=data['username'],
@@ -47,20 +55,6 @@ class UserSerializer(serializers.ModelSerializer):
         if User.objects.filter(email=data['email']):
             raise serializers.ValidationError('Такой email уже есть!')
         return data
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    current_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-    def validate_new_password(self, value):
-        validate_password(value)
-        return value
-
-
-class ConfirmationUserTokenSerializer(serializers.Serializer):
-    email = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
 
 
 class TagSerializer(serializers.ModelSerializer):

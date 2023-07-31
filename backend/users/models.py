@@ -8,11 +8,6 @@ from .validators import validator_username
 class User(AbstractUser):
 
     bio = models.TextField('Биография', null=False, blank=True)
-    email = models.EmailField(
-        'Почта',
-        unique=True,
-        max_length=254,
-    )
     username = models.CharField(unique=True,
                                 max_length=150,
                                 validators=[ASCIIUsernameValidator(),
@@ -20,16 +15,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=150,)
     last_name = models.CharField(max_length=150,)
     password = models.CharField(max_length=150,)
+    email = models.EmailField(verbose_name='email address', max_length=254, unique=True)
 
-    # @property
-    # def token(self):
-    #     """
-    #     Позволяет получить токен пользователя путем вызова user.token, вместо
-    #     user._generate_jwt_token(). Декоратор @property выше делает это
-    #     возможным. token называется "динамическим свойством".
-    #     """
-    #     return self._generate_jwt_token()
-    
     class Meta:
         constraints = [
             models.UniqueConstraint(

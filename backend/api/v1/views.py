@@ -17,7 +17,7 @@ from .permissions import (IsAdmin,
                           IsAuthorAdminModerOrReadOnly)
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .serializers import ConfirmationUserTokenSerializer, RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, ChangePasswordSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+from .serializers import RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
 
 
 class TagViewSet(ModelViewSet):
@@ -116,7 +116,9 @@ class IngredientViewSet(ModelViewSet):
     search_fields = ('=name',)
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
+                  GenericViewSet):
     lookup_field = 'id'
     queryset = User.objects.all().order_by('-id')
     permission_classes = (AllowAny,)
@@ -132,13 +134,14 @@ class UserViewSet(ModelViewSet):
             return UserSerializer
         else:
             return self.serializer_class
+        
     @action(
         detail=False,
         methods=['get', 'patch'],
         permission_classes=[IsAuthenticated, ],
     )
     def me(self, request):
-        user = get_object_or_404(User, username=self.request.user)
+        user = get_object_or_404(User, username=request.user)
         serializer = UserSerializer(
             user, data=request.data,
             partial=True,
@@ -183,41 +186,3 @@ class UserViewSet(ModelViewSet):
         serializer = UserSerializer(author)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class UpdatePassword(APIView):
-    permission_classes = (IsAuthenticated, )
-
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = ChangePasswordSerializer(data=request.data)
-
-        if serializer.is_valid():
-            # Check old password
-            old_password = serializer.data.get("current_password")
-            if not self.object.check_password(old_password):
-                return Response({"current_password": ["Wrong password."]}, 
-                                status=status.HTTP_400_BAD_REQUEST)
-            # set_password also hashes the password that the user will get
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-@api_view(['POST', 'get'])
-@permission_classes([AllowAny])
-def get_jwt_token(request):
-    serializer = ConfirmationUserTokenSerializer(data=request.data)
-    serializer.is_valid()
-    user_obj = get_object_or_404(User,
-                                 email="nikox122@mail.ru",
-                                 password="456852Zx"
-                                 )
-    token = AccessToken.for_user(user_obj)
-    return Response(
-        {'auth_token': str(token)}, status=status.HTTP_200_OK)
