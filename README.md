@@ -1,4 +1,4 @@
- 
+  
 ## Описание
 ### О проекте
 Галера Яндекс практикума по поднятию навыков работы с DRF
@@ -36,6 +36,7 @@ python -m venv venv
 
 ### Установить зависимости из файла requirements.txt:
 ```
+        cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 ```
@@ -52,13 +53,71 @@ python -m venv venv
         cd backend
         python manage.py runserver
 ```
+
 ### Создать суперпользователя:
 ```
-python manage.py createsuperuser
+        cd backend
+        python manage.py createsuperuser
 ```
 ### Наполнить базу данных:
 ```
-python manage.py importcsv
+        cd backend
+        python manage.py importcsv
+```
+
+## Запуск докер контейнеров на локальной машине:
+
+### Билдим проект и запускаем:
+```
+        docker compose up --build
+```
+
+### Выполнить миграции:
+```
+        docker compose exec backend python manage.py migrate
+```
+
+### Выполнить миграции:
+```
+        docker compose exec backend python manage.py createsuperuser
+```
+
+### Выполнить добавление ингредиентов из csv-файла:
+```
+        docker compose exec backend python manage.py importcsv
+```
+
+## Запуск докер контейнеров на удаленной машине:
+
+### Выполнить обновление apt:
+```
+        sudo apt update
+```
+
+### Билдим проект и запускаем:
+```
+        sudo docker compose -f docker-compose.production.yml up --build 
+```
+
+### Выполнить миграции:
+```
+        docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+```
+
+### Выполнить миграции:
+```
+        docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
+```
+
+### Выполнить добавление ингредиентов из csv-файла:
+```
+        docker compose -f docker-compose.production.yml exec backend python manage.py importcsv
+```
+
+
+### Настройки nginx:
+```
+        sudo nano /etc/nginx/sites-enabled/default
 ```
 
 ## Примеры
@@ -83,31 +142,54 @@ POST  api/v1/auth/signup/
 
 #####  End Point
 ```
-POST  api/v1/users/
+POST  api/users/
 ```
 #####  Body
 ```
 {
-        "email": "paymisssr@kek.ru",
-        "username": "passsymir121"
+    "email": "nikox12@mail.ru",
+    "username": "nikjox",
+    "password": "456852Zx",
+    "first_name": "kewk",
+    "last_name": "wsq"
 }
 ```
 ### Получение токена
 
 ##### End Point
 ```
-POST  api/v1/auth/token/
+POST  api/auth/token/
 ```
 #####  Body
 ```
 {
-        "username": "vdvha",
-        "confirmation_code": "40041"
+    "email": "nikox12@mail.ru",
+    "password": "456852Zx",
 }
+```
+###  Все примеры
+
+#### Используя ReDoc
+
+##### End Point
+```
+POST  api/auth/token/
+```
+
+#####  Body
+```
+{
+    "email": "nikox12@mail.ru",
+    "password": "456852Zx",
+}
+```
+
+#### Используя Rest API
+Так же посмотреть\отправить запросы можно используя плагин для Visual Studia Code Rest API все примеры лежат в папке backend/request
 ```
 ### Посмотреть все примеры  доступных эндпоинтов можно тут
 
 ```http
-  /redoc
+  redoc/
 ```
 docker compose exec backend python manage.py migrate
