@@ -18,10 +18,7 @@ Content-Type: application/json
 
 {
     "email": "nikox12@mail.ru",
-    "username": "nikjox",
     "password": "456852Zx",
-    "first_name": "kewk",
-    "last_name": "wsq"
 }
 
 ###

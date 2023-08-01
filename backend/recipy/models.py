@@ -3,18 +3,8 @@ from django.db import models
 from users.models import User
 
 
-class AbstractSlugModel(models.Model):
 
-    slug = models.SlugField(unique=True)
-
-    class Meta:
-        abstract = True
-
-    def __str__(self):
-        return self.name
-
-
-class Ingredient(AbstractSlugModel):
+class Ingredient(models.Model):
 
     name = models.CharField(
         max_length=256,
@@ -26,9 +16,12 @@ class Ingredient(AbstractSlugModel):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
+    
+    def __str__(self):
+        return self.name
 
 
-class Tag(AbstractSlugModel):
+class Tag(models.Model):
 
     name = models.CharField(
         max_length=256,
@@ -40,7 +33,8 @@ class Tag(AbstractSlugModel):
     class Meta:
         verbose_name = 'Таг'
         verbose_name_plural = 'Таги'
-
+    def __str__(self):
+        return self.name
 
 class Recipy(models.Model):
     author = models.ForeignKey(
