@@ -165,10 +165,3 @@ DJOSER = {
         'current_user': 'api.v1.serializers.UserSerializer',
     },
 }
-
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-
-EMAIL_FILE_PATH = (BASE_DIR / 'sent_emails/')
-
-ACCOUNT_EMAIL_UNIQUE = True
-ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
