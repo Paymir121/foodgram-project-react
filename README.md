@@ -167,22 +167,16 @@ POST  api/auth/token/
     "password": "456852Zx",
 }
 ```
+
 ###  Все примеры
 
 #### Используя ReDoc
 
 ##### End Point
-```
-POST  api/auth/token/
+```http
+        /redoc
 ```
 
-#####  Body
-```
-{
-    "email": "nikox12@mail.ru",
-    "password": "456852Zx",
-}
-```
 
 #### Используя Rest API
-Так же посмотреть\отправить запросы можно используя плагин для Visual Studia Code Rest API все примеры лежат в папке backend/request
+Посмотреть\отправить запросы можно используя плагин для Visual Studia Code Rest API все примеры лежат в папке backend/request
