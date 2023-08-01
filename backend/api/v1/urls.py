@@ -1,7 +1,11 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import UserViewSet, MyTokenObtainPairView, UpdatePassword, TagViewSet, RecipyViewSet, IngredientViewSet
+from .views import (TagViewSet,
+                    RecipyViewSet,
+                    IngredientViewSet,
+                    UserViewSet,
+                    )
 
 app_name = "api"
 
@@ -12,11 +16,8 @@ router_v1.register('recipes', RecipyViewSet, basename='recipes')
 router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
-    path('users/set_password/',
-         UpdatePassword.as_view(),
-         name='set password'),
     path('', include(router_v1.urls)),
-    path('auth/token/',
-         MyTokenObtainPairView.as_view(),
-         name='token_obtain_pair'),
+    path('', include('djoser.urls')),  
+    path('auth/', include('djoser.urls.authtoken')),
+
 ]

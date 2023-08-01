@@ -13,6 +13,7 @@ def get_reader(file_name):
     reader = csv.DictReader(csv_file, delimiter=',') 
     return reader 
 
+
 class Command(BaseCommand): 
 
     def handle(self, *args, **options):
