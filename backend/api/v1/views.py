@@ -17,7 +17,7 @@ from .permissions import (IsAdmin,
                           IsAuthorAdminModerOrReadOnly)
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .serializers import RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+from .serializers import MeUserSerializer, RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
 
 
 class TagViewSet(ModelViewSet):
@@ -52,10 +52,11 @@ class RecipyViewSet(ModelViewSet):
         recipy = get_object_or_404(Recipy, id=pk)
         if request.method == 'DELETE':
             Favorite.objects.filter(recipy=recipy, user=user).delete()
+            return Response({"errors": recipy.name}, status=status.HTTP_200_OK)
         if request.method == 'POST':
             Favorite.objects.create(recipy=recipy, user=user)
-        serializer = RecipyFavoriteReadSerializer(recipy)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            serializer = RecipyFavoriteReadSerializer(recipy)
+            return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(
         detail=True,
@@ -142,7 +143,7 @@ class UserViewSet(mixins.CreateModelMixin,
     )
     def me(self, request):
         user = get_object_or_404(User, username=request.user)
-        serializer = UserSerializer(
+        serializer = MeUserSerializer(
             user, data=request.data,
             partial=True,
             context={'request': request})
@@ -175,14 +176,17 @@ class UserViewSet(mixins.CreateModelMixin,
     
     @action(
         detail=True,
-        methods=['post'],
+        methods=['post','delete'],
         permission_classes=[IsAuthenticated, ],
         url_path=r'subscribe'
     )
     def subscribe(self, request, id=None):
         user = get_object_or_404(User, username=self.request.user)
         author = get_object_or_404(User, id=id)
-        Follow.objects.create(author=author, user=user)
+        if request.method == 'DELETE':
+            Follow.objects.filter(author=author, user=user).delete()
+        if request.method == 'POST':
+            Follow.objects.create(author=author, user=user)
         serializer = UserSerializer(author)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

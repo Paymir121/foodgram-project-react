@@ -2,23 +2,23 @@
 
 GET http://127.0.0.1:8000/api/users/subscriptions/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
 }
 
 ###
-POST http://127.0.0.1:8000/api/users/3/subscribe/
+POST http://127.0.0.1:8000/api/users/1/subscribe/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
 }
 
 ###
-delete http://127.0.0.1:8000/api/users/3/subscribe/
+delete http://127.0.0.1:8000/api/users/1/subscribe/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
 }

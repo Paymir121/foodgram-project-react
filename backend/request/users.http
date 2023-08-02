@@ -15,26 +15,27 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-<<<<<<< HEAD
-    "email": "nikox12@mail.ru",
-    "password": "456852Zx",
-=======
     "email": "nikox121212121@mail.ru",
     "password": "456852Zx"
->>>>>>> 4317f4dfad457ee07faa529774e8740ab48bf633
 }
 
 
 ###
 GET http://127.0.0.1:8000/api/users/me/ 
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
-    # "email": "nikox1222222@mail.ru",
-    "username": "nikjox",
-    "password": "456852Zx",
-    "first_name": "kewk",
-    "last_name": "wsq"
 }
 
+###
+patch http://127.0.0.1:8000/api/users/me/ 
+Content-Type: application/json
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+
+{
+    "first_name": "nikita",
+    "last_name": "romanov",
+    "username": "nikox121"
+
+}

@@ -1,7 +1,7 @@
 
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: auth_token 4845ce1e2e10e537d6f13bdd2390248b5a39b43d
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
 }
@@ -9,7 +9,7 @@ Authorization: auth_token 4845ce1e2e10e537d6f13bdd2390248b5a39b43d
 ###
 GET http://127.0.0.1:8000/api/recipes/1/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
 }
@@ -18,25 +18,28 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiY
 
 Post http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
-    "ingredients": [
-    ],
+  "ingredients": [
+    {
+    "id": 1123,
+    "amount": 10
+    }
+  ],
     "tags": [
-
-
-    ],
-    "name": "nddes",
+    1
+  ],
+    "name": "recipy2",
     "image": null,
-    "text": "sadasd",
+    "text": "recipy",
     "cooking_time": 3
 }
 
 ###
 PATCH http://127.0.0.1:8000/api/recipes/3/
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjkyMzU5NDE5LCJpYXQiOjE2ODk3Njc0MTksImp0aSI6ImMxYzJlMjczZTFmZTQzMmY4OWNiNzEwOTJkNWZkYTMwIiwidXNlcl9pZCI6Mn0.odaLlP5au-qWBPzj-MK4S0rosVTHsgDrY5p7Im-QqTU
+Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 {
   "ingredients": [
@@ -49,7 +52,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiY
     1
   ],
   "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
-  "name": "strdsving",
+  "name": "recipy2",
   "text": "strdscsing",
   "cooking_time": 155
 }

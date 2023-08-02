@@ -23,6 +23,11 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
+class MeUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'first_name', 'last_name', 'id']
+
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, max_length=150)
     username = serializers.CharField(required=True,
@@ -61,7 +66,7 @@ class TagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'color', 'slug',)
+        fields = ('id', 'name', 'color',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
