@@ -23,7 +23,7 @@ Content-Type: application/json
 ###
 GET http://127.0.0.1:8000/api/users/me/ 
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
 }
@@ -31,11 +31,19 @@ Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 ###
 patch http://127.0.0.1:8000/api/users/me/ 
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
     "first_name": "nikita",
     "last_name": "romanov",
     "username": "nikox121"
 
+}
+
+###
+GET http://127.0.0.1:8000/api/users/2/ 
+Content-Type: application/json
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+
+{
 }

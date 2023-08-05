@@ -77,9 +77,15 @@ python -m venv venv
         docker compose exec backend python manage.py migrate
 ```
 
-### Выполнить миграции:
+### Выполнить создание суперпользователя:
 ```
         docker compose exec backend python manage.py createsuperuser
+```
+
+### Выполнить Собрать статику Django:
+```
+        docker compose exec backend python manage.py collectstatic
+        docker compose exec backend cp -r /app/collected_static/. /backend_static/static/ 
 ```
 
 ### Выполнить добавление ингредиентов из csv-файла:

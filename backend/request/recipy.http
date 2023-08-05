@@ -1,15 +1,15 @@
 
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
 }
 
 ###
-GET http://127.0.0.1:8000/api/recipes/1/
+GET http://127.0.0.1:8000/api/recipes/2/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
 }
@@ -18,7 +18,7 @@ Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 
 Post http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
   "ingredients": [
@@ -39,7 +39,7 @@ Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 ###
 PATCH http://127.0.0.1:8000/api/recipes/3/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
   "ingredients": [

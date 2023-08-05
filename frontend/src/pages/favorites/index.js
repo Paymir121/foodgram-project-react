@@ -59,7 +59,9 @@ const Favorites = ({ updateOrders }) => {
           }}
         />
       </div>
-      <CardList>
+      <CardList orders={recipes}
+          handleRemoveFromCart={handleAddToCart}
+          updateOrders={updateOrders}>
         {recipes.map(card => <Card
           {...card}
           key={card.id}

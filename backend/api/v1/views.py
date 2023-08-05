@@ -16,8 +16,8 @@ from .permissions import (IsAdmin,
                           IsAdminOrReadOnly,
                           IsAuthorAdminModerOrReadOnly)
 from rest_framework_simplejwt.tokens import AccessToken
-
-from .serializers import MeUserSerializer, RecipyIngredient, RecipyFavoriteReadSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+from rest_framework.pagination import LimitOffsetPagination
+from .serializers import FavoriteWriteSerializer, MeUserSerializer, RecipyIngredient, RecipyFavoriteWriteSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
 
 
 class TagViewSet(ModelViewSet):
@@ -40,7 +40,7 @@ class RecipyViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
-    
+
     @action(
         detail=True,
         methods=['post', 'delete'],
@@ -55,9 +55,9 @@ class RecipyViewSet(ModelViewSet):
             return Response({"errors": recipy.name}, status=status.HTTP_200_OK)
         if request.method == 'POST':
             Favorite.objects.create(recipy=recipy, user=user)
-            serializer = RecipyFavoriteReadSerializer(recipy)
+            serializer = RecipyFavoriteWriteSerializer(recipy)
             return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(
         detail=True,
         methods=['post', 'delete'],
@@ -71,7 +71,7 @@ class RecipyViewSet(ModelViewSet):
             ShoppingCart.objects.filter(recipy=recipy, user=user).delete()
         if request.method == 'POST':
             ShoppingCart.objects.create(recipy=recipy, user=user)
-        serializer = RecipyFavoriteReadSerializer(recipy)
+        serializer = RecipyFavoriteWriteSerializer(recipy)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     @action(
@@ -117,9 +117,7 @@ class IngredientViewSet(ModelViewSet):
     search_fields = ('=name',)
 
 
-class UserViewSet(mixins.CreateModelMixin,
-                  mixins.RetrieveModelMixin,
-                  GenericViewSet):
+class UserViewSet(ModelViewSet):
     lookup_field = 'id'
     queryset = User.objects.all().order_by('-id')
     permission_classes = (AllowAny,)
@@ -127,7 +125,8 @@ class UserViewSet(mixins.CreateModelMixin,
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
-
+    pagination_class = LimitOffsetPagination
+    
     def get_serializer_class(self):
         if self.action == "retrieve":
             return self.serializer_class
@@ -156,19 +155,19 @@ class UserViewSet(mixins.CreateModelMixin,
         detail=False,
         methods=['get'],
         permission_classes=[IsAuthenticated, ],
+        pagination_class=LimitOffsetPagination,
+        url_path=r'subscriptions'
     )
     def subscriptions(self, request):
+        # pagination_class=LimitOffsetPagination
         user = get_object_or_404(User, username=self.request.user)
         follows = Follow.objects.filter(user=user)
         followers = []
         for follow in follows:
             follower = User.objects.get(id=follow.author.id)
             followers.append(follower)
+            
         serializer = self.get_serializer(followers, many=True)
-
-        if request.method == 'PATCH':
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
 
         return Response(
             serializer.data,
@@ -185,8 +184,10 @@ class UserViewSet(mixins.CreateModelMixin,
         author = get_object_or_404(User, id=id)
         if request.method == 'DELETE':
             Follow.objects.filter(author=author, user=user).delete()
+            author.is_subscribed = False
         if request.method == 'POST':
-            Follow.objects.create(author=author, user=user)
-        serializer = UserSerializer(author)
+            Follow.objects.get_or_create(author=author, user=user)
+            author.is_subscribed = True
+        serializer = FavoriteWriteSerializer(author)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

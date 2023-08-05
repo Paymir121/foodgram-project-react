@@ -25,6 +25,8 @@ const Cart = ({ updateOrders, orders }) => {
       })
   }
 
+  
+
   useEffect(_ => {
     getRecipes()
   }, [])
