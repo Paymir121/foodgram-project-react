@@ -179,8 +179,4 @@ POST  api/auth/token/
 
 
 #### Используя Rest API
-<<<<<<< HEAD
 Посмотреть\отправить запросы можно используя плагин для Visual Studia Code Rest API все примеры лежат в папке backend/request
-=======
-Посмотреть\отправить запросы можно используя плагин для Visual Studia Code Rest API все примеры лежат в папке backend/request
->>>>>>> 4317f4dfad457ee07faa529774e8740ab48bf633
