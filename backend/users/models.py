@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import ASCIIUsernameValidator
+from django.core.exceptions import ValidationError
 
 from .validators import validator_username
 
@@ -50,3 +51,7 @@ class Follow(models.Model):
 
     def __str__(self) -> str:
         return f'{self.author}'
+    
+    def clean(self):
+        if self.user == self.author:
+            raise ValidationError('Нельзя подписываться на самого себя')

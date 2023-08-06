@@ -10,8 +10,15 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 ###
 DELETE http://127.0.0.1:8000/api/recipes/1/favorite/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 {
 }
 
+###
+get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_favorited=1
+Content-Type: application/json
+Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+
+{
+}

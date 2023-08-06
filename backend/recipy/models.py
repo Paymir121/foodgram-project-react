@@ -36,6 +36,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+
 class Recipy(models.Model):
     author = models.ForeignKey(
         User,
@@ -104,7 +105,7 @@ class Favorite(models.Model):
     recipy = models.ForeignKey(
         Recipy,
         on_delete=models.CASCADE,
-        related_name='favorite',
+        related_name='favorites',
         verbose_name='Избранное',
     )
 

@@ -18,7 +18,9 @@ from .permissions import (IsAdmin,
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.pagination import LimitOffsetPagination
 from .serializers import FavoriteWriteSerializer, MeUserSerializer, RecipyIngredient, RecipyFavoriteWriteSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
-
+from django.db.models import Exists
+from django.db.models import OuterRef
+from .pagination import CustomPagination
 
 class TagViewSet(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
@@ -41,6 +43,18 @@ class RecipyViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+    def get_queryset(self):
+        queryset = Recipy.objects.all()
+        is_favorited = self.request.query_params.get('is_favorited')
+        author = self.request.query_params.get('author')
+        user = self.request.user
+        if is_favorited:
+            user = self.request.user
+            queryset = Recipy.objects.filter(favorites__user=user)
+        if author:
+            queryset = Recipy.objects.filter(author=author)
+        return queryset
+    
     @action(
         detail=True,
         methods=['post', 'delete'],
@@ -54,7 +68,7 @@ class RecipyViewSet(ModelViewSet):
             Favorite.objects.filter(recipy=recipy, user=user).delete()
             return Response({"errors": recipy.name}, status=status.HTTP_200_OK)
         if request.method == 'POST':
-            Favorite.objects.create(recipy=recipy, user=user)
+            Favorite.objects.get_or_create(recipy=recipy, user=user)
             serializer = RecipyFavoriteWriteSerializer(recipy)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -125,7 +139,7 @@ class UserViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomPagination
     
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -155,11 +169,10 @@ class UserViewSet(ModelViewSet):
         detail=False,
         methods=['get'],
         permission_classes=[IsAuthenticated, ],
-        pagination_class=LimitOffsetPagination,
+        pagination_class=CustomPagination,
         url_path=r'subscriptions'
     )
     def subscriptions(self, request):
-        # pagination_class=LimitOffsetPagination
         user = get_object_or_404(User, username=self.request.user)
         follows = Follow.objects.filter(user=user)
         followers = []
@@ -175,7 +188,7 @@ class UserViewSet(ModelViewSet):
     
     @action(
         detail=True,
-        methods=['post','delete'],
+        methods=['post', 'delete'],
         permission_classes=[IsAuthenticated, ],
         url_path=r'subscribe'
     )
