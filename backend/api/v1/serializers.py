@@ -52,9 +52,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
+
         user = request.user
         followed = Follow.objects.filter(author=obj, user=user)
         return followed.exists()
+
     
     def create(self, validated_data):
         user = User(
@@ -78,11 +80,55 @@ class UserSerializer(serializers.ModelSerializer):
         return data
 
 
-class FavoriteWriteSerializer(UserSerializer):
+class FollowWriteSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     def get_is_subscribed(self, obj):
         return obj.is_subscribed
+
+class FollowRecipeSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(required=True, max_length=150,)
+    image = Base64ImageField(required=False, allow_null=True)
+    cooking_time = serializers.IntegerField()
+
+    class Meta:
+        model = Recipy
+        fields = ('id',
+                  'name',
+                  'image',
+                  'cooking_time',
+                  )
+
+
+class FollowReadSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['email',
+                  'username',
+                  'password',
+                  'first_name',
+                  'last_name',
+                  'id',
+                  'is_subscribed',
+                  "recipes",
+                  'recipes_count']
+
+    def get_is_subscribed(self, obj):
+        return True
+    
+    def get_recipes(self, obj):
+        recipes = Recipy.objects.filter(author=obj)
+        serializers = FollowRecipeSerializer(recipes, many=True)
+        return serializers.data
+    
+    def get_recipes_count(self, obj):
+        return Recipy.objects.filter(author=obj).count()
+
+
 
 
 class TagSerializer(serializers.ModelSerializer):

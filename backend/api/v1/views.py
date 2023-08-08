@@ -17,7 +17,7 @@ from .permissions import (IsAdmin,
                           IsAuthorAdminModerOrReadOnly)
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.pagination import LimitOffsetPagination
-from .serializers import FavoriteWriteSerializer, MeUserSerializer, RecipyIngredient, RecipyFavoriteWriteSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
+from .serializers import FollowReadSerializer, FollowWriteSerializer, MeUserSerializer, RecipyIngredient, RecipyFavoriteWriteSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
 from django.db.models import Exists
 from django.db.models import OuterRef
 from .pagination import CustomPagination
@@ -139,7 +139,7 @@ class UserViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
-    pagination_class = CustomPagination
+    pagination_class = LimitOffsetPagination
     
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -173,18 +173,10 @@ class UserViewSet(ModelViewSet):
         url_path=r'subscriptions'
     )
     def subscriptions(self, request):
-        user = get_object_or_404(User, username=self.request.user)
-        follows = Follow.objects.filter(user=user)
-        followers = []
-        for follow in follows:
-            follower = User.objects.get(id=follow.author.id)
-            followers.append(follower)
-            
-        serializer = self.get_serializer(followers, many=True)
-
-        return Response(
-            serializer.data,
-            status=status.HTTP_200_OK)
+        user_follower = User.objects.filter(following__user=request.user)
+        serializer = FollowReadSerializer(user_follower, many=True,)
+        queryset = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(queryset)
     
     @action(
         detail=True,
@@ -201,6 +193,6 @@ class UserViewSet(ModelViewSet):
         if request.method == 'POST':
             Follow.objects.get_or_create(author=author, user=user)
             author.is_subscribed = True
-        serializer = FavoriteWriteSerializer(author)
+        serializer = FollowWriteSerializer(author)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
