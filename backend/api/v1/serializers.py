@@ -52,7 +52,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         request = self.context.get('request')
-
         user = request.user
         followed = Follow.objects.filter(author=obj, user=user)
         return followed.exists()
@@ -121,14 +120,12 @@ class FollowReadSerializer(UserSerializer):
         return True
     
     def get_recipes(self, obj):
-        recipes = Recipy.objects.filter(author=obj)
+        recipes = Recipy.objects.filter(author=obj).order_by("-pub_date")
         serializers = FollowRecipeSerializer(recipes, many=True)
         return serializers.data
     
     def get_recipes_count(self, obj):
         return Recipy.objects.filter(author=obj).count()
-
-
 
 
 class TagSerializer(serializers.ModelSerializer):

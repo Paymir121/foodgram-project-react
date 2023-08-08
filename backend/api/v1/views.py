@@ -140,14 +140,6 @@ class UserViewSet(ModelViewSet):
     search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
     pagination_class = LimitOffsetPagination
-    
-    def get_serializer_class(self):
-        if self.action == "retrieve":
-            return self.serializer_class
-        elif self.action == "subscriptions":
-            return UserSerializer
-        else:
-            return self.serializer_class
         
     @action(
         detail=False,
@@ -169,7 +161,6 @@ class UserViewSet(ModelViewSet):
         detail=False,
         methods=['get'],
         permission_classes=[IsAuthenticated, ],
-        pagination_class=CustomPagination,
         url_path=r'subscriptions'
     )
     def subscriptions(self, request):
