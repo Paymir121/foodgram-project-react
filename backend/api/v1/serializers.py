@@ -51,10 +51,11 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        user = request.user
-        followed = Follow.objects.filter(author=obj, user=user)
-        return followed.exists()
+        if self.context.get('request').method != "POST":
+            request = self.context.get('request')
+            user = request.user
+            return Follow.objects.filter(author=obj, user=user).exists()
+        return False
 
     
     def create(self, validated_data):
