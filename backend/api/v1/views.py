@@ -21,6 +21,8 @@ from .serializers import FollowReadSerializer, FollowWriteSerializer, MeUserSeri
 from django.db.models import Exists
 from django.db.models import OuterRef
 from .pagination import CustomPagination
+from django_filters.rest_framework import DjangoFilterBackend
+
 
 class TagViewSet(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
@@ -34,6 +36,8 @@ class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
     permission_classes = (AllowAny,)
     queryset = Recipy.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('tags', )
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:

@@ -56,3 +56,11 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
   "text": "strdscsing",
   "cooking_time": 155
 }
+
+###
+get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&tags=1
+Content-Type: application/json
+Authorization: Token 3b4fd0222100e0ce010de66ebc889bf6579e08f6
+
+{
+}
