@@ -1,7 +1,7 @@
 
 GET http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: Token 3b4fd0222100e0ce010de66ebc889bf6579e08f6
 
 {
 }
@@ -9,7 +9,7 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 ###
 GET http://127.0.0.1:8000/api/recipes/2/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: Token 3b4fd0222100e0ce010de66ebc889bf6579e08f6
 
 {
 }
@@ -18,7 +18,7 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 
 Post http://127.0.0.1:8000/api/recipes/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: Token 3b4fd0222100e0ce010de66ebc889bf6579e08f6
 
 {
   "ingredients": [
@@ -32,14 +32,14 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
   ],
     "name": "recipy2",
     "image": null,
-    "text": "recipy",
+    "text": "recipywqd",
     "cooking_time": 3
 }
 
 ###
 PATCH http://127.0.0.1:8000/api/recipes/3/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: Token 3b4fd0222100e0ce010de66ebc889bf6579e08f6
 
 {
   "ingredients": [

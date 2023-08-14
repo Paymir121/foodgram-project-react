@@ -22,7 +22,7 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-
+    # slug = models.SlugField(unique=True)
     name = models.CharField(
         max_length=256,
         verbose_name='Тег',
@@ -33,6 +33,7 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Таг'
         verbose_name_plural = 'Таги'
+
     def __str__(self):
         return self.name
 

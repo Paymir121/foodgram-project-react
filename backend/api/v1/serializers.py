@@ -144,7 +144,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class IngredientWriteRecipySerializer(serializers.Serializer):
     id = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(write_only=True)
+
 
 
 class RecipyReadSerializer(serializers.ModelSerializer):
@@ -201,6 +202,9 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
     image = Base64ImageField(required=False, allow_null=True)
     text = serializers.CharField(required=True)
     cooking_time = serializers.IntegerField()
+    author = UserSerializer(required=False,)
+    is_favorited = serializers.SerializerMethodField(required=False,)
+    is_in_shopping_cart = serializers.SerializerMethodField(required=False,)
 
     class Meta:
         model = Recipy
@@ -211,7 +215,31 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
                   'image',
                   'text',
                   'cooking_time',
+                  'author',
+                  "is_favorited",
+                  "is_in_shopping_cart",
                   )
+
+    def get_is_favorited(self, obj):
+        request = self.context.get('request')
+        user = request.user
+        favorited = Favorite.objects.filter(recipy=obj, user=user)
+        return favorited.exists()
+        
+    def get_is_in_shopping_cart(self, obj):
+        request = self.context.get('request')
+        user = request.user
+        recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj, user=user)
+        return recipy_in_shopping_cart.exists()
+
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        ingredients = instance.ingredients.values()
+        for ingredient in ingredients:
+            amount = RecipyIngredient.objects.get(recipy=instance, ingredients=ingredient['id']).amount
+            ingredient['amount'] = amount
+        rep['ingredients'] = ingredients
+        return rep
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
