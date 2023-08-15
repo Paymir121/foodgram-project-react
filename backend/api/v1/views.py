@@ -54,7 +54,6 @@ class RecipyViewSet(ModelViewSet):
         tags = self.request.query_params.get('tags')
         user = self.request.user
         if is_favorited:
-            user = self.request.user
             queryset = Recipy.objects.filter(favorites__user=user)
         if author:
             queryset = Recipy.objects.filter(author=author)
