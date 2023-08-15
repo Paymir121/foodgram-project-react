@@ -1,7 +1,8 @@
 from django.db import models
 
-from users.models import User
-
+# from users.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class Ingredient(models.Model):
@@ -22,7 +23,7 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    # slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)
     name = models.CharField(
         max_length=256,
         verbose_name='Тег',

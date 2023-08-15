@@ -36,8 +36,8 @@ class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
     permission_classes = (AllowAny,)
     queryset = Recipy.objects.all()
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('tags', )
+    # filter_backends = (DjangoFilterBackend,)
+    # filterset_fields = ('tags', )
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -51,12 +51,16 @@ class RecipyViewSet(ModelViewSet):
         queryset = Recipy.objects.all()
         is_favorited = self.request.query_params.get('is_favorited')
         author = self.request.query_params.get('author')
+        tags = self.request.query_params.get('tags')
         user = self.request.user
         if is_favorited:
             user = self.request.user
             queryset = Recipy.objects.filter(favorites__user=user)
         if author:
             queryset = Recipy.objects.filter(author=author)
+        if tags:
+            print(tags)
+            queryset = Recipy.objects.filter(tags__slug=tags)
         return queryset
     
     @action(

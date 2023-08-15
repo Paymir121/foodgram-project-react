@@ -3,8 +3,8 @@ POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
 {
-    "email": "niko7w-xq1j2140-2-12121@mail.ru",
-    "username": "nikwjqo704--x1-312121111",
+    "email": "nikox121@mail.ru",
+    "username": "nikox123@mail.ru",
     "password": "456852Zx",
     "first_name": "kewk",
     "last_name": "wsq"
@@ -15,7 +15,7 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-    "email": "nikox121212121@mail.ru",
+    "email": "nikox121@mail.ru",
     "password": "456852Zx"
 }
 
