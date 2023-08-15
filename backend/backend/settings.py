@@ -1,5 +1,4 @@
 from pathlib import Path
-from datetime import timedelta
 import os
 from dotenv import load_dotenv
 
@@ -170,4 +169,5 @@ DJOSER = {
         'user': 'api.v1.serializers.UserSerializer',
         'current_user': 'api.v1.serializers.UserSerializer',
     },
+    'PASSWORD_RESET_CONFIRM_URL': '#/ser_password/{uid}/{token}',
 }

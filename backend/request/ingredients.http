@@ -1,7 +1,9 @@
+@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
 
+###
 GET http://127.0.0.1:8000/api/ingredients/
 Content-Type: application/json
-Authorization: auth_token 4845ce1e2e10e537d6f13bdd2390248b5a39b43d
+Authorization: {{TOKEN}}
 
 {
 }

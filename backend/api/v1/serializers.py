@@ -1,16 +1,17 @@
-from django.contrib.auth.validators import ASCIIUsernameValidator
-from rest_framework import serializers
-from users.models import User, Follow
-from recipy.models import Tag, Recipy, Ingredient, RecipyIngredient, Favorite, ShoppingCart
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import AccessToken
-from django.shortcuts import get_object_or_404 
-from django.contrib.auth.password_validation import validate_password
 import base64
+
+from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.files.base import ContentFile
-from rest_framework import filters, mixins, status
-from rest_framework.response import Response
-from djoser.serializers import UserSerializer
+from rest_framework import serializers
+
+from users.models import User, Follow
+from recipy.models import (Tag,
+                           Recipy,
+                           Ingredient,
+                           RecipyIngredient,
+                           Favorite,
+                           ShoppingCart)
+
 
 class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
@@ -23,10 +24,22 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
+class TagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Tag
+        fields = ('id', 'name', 'color',)
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = ('id', 'name', 'measurement_unit')
+
 class MeUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'username', 'first_name', 'last_name', 'id']
+        fields = ['username', 'first_name', 'last_name', 'id']
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -86,6 +99,7 @@ class FollowWriteSerializer(UserSerializer):
     def get_is_subscribed(self, obj):
         return obj.is_subscribed
 
+
 class FollowRecipeSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=True, max_length=150,)
     image = Base64ImageField(required=False, allow_null=True)
@@ -129,23 +143,10 @@ class FollowReadSerializer(UserSerializer):
         return Recipy.objects.filter(author=obj).count()
 
 
-class TagSerializer(serializers.ModelSerializer):
-
+class RecipyFavoriteWriteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Tag
-        fields = ('id', 'name', 'color',)
-
-
-class IngredientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
-
-
-class IngredientWriteRecipySerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    amount = serializers.IntegerField(write_only=True)
-
+        model = Recipy
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class RecipyReadSerializer(serializers.ModelSerializer):
@@ -155,7 +156,7 @@ class RecipyReadSerializer(serializers.ModelSerializer):
     name = serializers.CharField(required=True, max_length=150,)
     image = Base64ImageField(required=True, allow_null=True)
     text = serializers.CharField(required=True)
-    cooking_time = serializers.IntegerField(read_only=True)
+    cooking_time = serializers.IntegerField(required=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -193,53 +194,26 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         return ingredients
 
 
-class RecipyWriteSerializer(serializers.ModelSerializer):
+class IngredientWriteRecipySerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    amount = serializers.IntegerField(write_only=True)
+
+
+class RecipyWriteSerializer(RecipyReadSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
     )
     ingredients = IngredientWriteRecipySerializer(many=True)
-    name = serializers.CharField(required=True, max_length=150,)
-    image = Base64ImageField(required=False, allow_null=True)
-    text = serializers.CharField(required=True)
-    cooking_time = serializers.IntegerField()
     author = UserSerializer(required=False,)
-    is_favorited = serializers.SerializerMethodField(required=False,)
-    is_in_shopping_cart = serializers.SerializerMethodField(required=False,)
-
-    class Meta:
-        model = Recipy
-        fields = ('id',
-                  'tags',
-                  'ingredients',
-                  'name',
-                  'image',
-                  'text',
-                  'cooking_time',
-                  'author',
-                  "is_favorited",
-                  "is_in_shopping_cart",
-                  )
-
-    def get_is_favorited(self, obj):
-        request = self.context.get('request')
-        user = request.user
-        favorited = Favorite.objects.filter(recipy=obj, user=user)
-        return favorited.exists()
-        
-    def get_is_in_shopping_cart(self, obj):
-        request = self.context.get('request')
-        user = request.user
-        recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj, user=user)
-        return recipy_in_shopping_cart.exists()
 
     def to_representation(self, instance):
-        rep = super().to_representation(instance)
+        representation = super().to_representation(instance)
         ingredients = instance.ingredients.values()
         for ingredient in ingredients:
             amount = RecipyIngredient.objects.get(recipy=instance, ingredients=ingredient['id']).amount
             ingredient['amount'] = amount
-        rep['ingredients'] = ingredients
-        return rep
+        representation['ingredients'] = ingredients
+        return representation
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
@@ -276,7 +250,3 @@ class RecipyWriteSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
     
 
-class RecipyFavoriteWriteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Recipy
-        fields = ('id', 'name', 'image', 'cooking_time')

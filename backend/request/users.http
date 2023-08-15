@@ -1,3 +1,5 @@
+@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
+
 ###
 POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
@@ -16,43 +18,41 @@ Content-Type: application/json
 
 {
     "email": "nikox121@mail.ru",
-    "password": "456852Zx"
+    "password": "456852Zxы"
 }
 
+###
+POST http://127.0.0.1:8000/api/users/set_password/
+Content-Type: application/json
+Authorization: {{TOKEN}}
+
+{
+"new_password": "456852Zxы",
+"current_password": "456852Zx"
+}
 
 ###
 GET http://127.0.0.1:8000/api/users/me/ 
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: {{TOKEN}}
 
 {
 }
 
-###
-patch http://127.0.0.1:8000/api/users/me/ 
-Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
-
-{
-    "first_name": "nikita",
-    "last_name": "romanov",
-    "username": "nikox121"
-
-}
 
 ###
 GET http://127.0.0.1:8000/api/users/2/ 
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: {{TOKEN}}
 
 {
 }
 
 
 ###
-GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&author=7
+GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&author=1
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: {{TOKEN}}
 
 {
 }

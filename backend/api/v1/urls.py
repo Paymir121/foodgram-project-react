@@ -5,6 +5,7 @@ from .views import (TagViewSet,
                     RecipyViewSet,
                     IngredientViewSet,
                     UserViewSet,
+                    APIFollow,
                     )
 
 app_name = "api"
@@ -16,8 +17,9 @@ router_v1.register('recipes', RecipyViewSet, basename='recipes')
 router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
-    path('', include(router_v1.urls)),
+    path('users/subscriptions/', APIFollow.as_view()),
     path('', include('djoser.urls')),  
+    path('', include(router_v1.urls)),
     path('auth/', include('djoser.urls.authtoken')),
 
 ]

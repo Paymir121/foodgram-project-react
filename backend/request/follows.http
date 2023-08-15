@@ -1,16 +1,17 @@
+@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
 
-
+###
 GET http://127.0.0.1:8000/api/users/subscriptions/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: {{TOKEN}}
 
 {
 }
 
 ###
-POST http://127.0.0.1:8000/api/users/2/subscribe/
+POST http://127.0.0.1:8000/api/users/1/subscribe/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: {{TOKEN}}
 
 {
 }
@@ -18,7 +19,7 @@ Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 ###
 delete http://127.0.0.1:8000/api/users/2/subscribe/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: {{TOKEN}}
 
 {
 }

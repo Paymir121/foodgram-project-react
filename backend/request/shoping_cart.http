@@ -1,7 +1,9 @@
+@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
 
-POST http://127.0.0.1:8000/api/recipes/1/shopping_cart/
+###
+POST http://127.0.0.1:8000/api/recipes/2/shopping_cart/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: {{TOKEN}}
 
 {
 }
@@ -9,14 +11,14 @@ Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
 ###
 DELETE http://127.0.0.1:8000/api/recipes/1/shopping_cart/
 Content-Type: application/json
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: {{TOKEN}}
 
 {
 }
 
 ###
 get http://127.0.0.1:8000/api/recipes/download_shopping_cart/
-Authorization: Token f7a6cfd79ea9a12e0c470f479bf0c96bca150363
+Authorization: {{TOKEN}}
 
 {
 }

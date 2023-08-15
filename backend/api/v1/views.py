@@ -1,27 +1,35 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
-from rest_framework import filters, mixins, status
-from rest_framework_simplejwt.views import TokenObtainPairView
-from django.shortcuts import get_object_or_404
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
 import csv
+
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from users.models import User, Follow
-from recipy.models import Tag, Ingredient, Recipy, Favorite, ShoppingCart
-from .permissions import (IsAdmin,
-                          IsAdminOrReadOnly,
-                          IsAuthorAdminModerOrReadOnly)
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework.pagination import LimitOffsetPagination
-from .serializers import FollowReadSerializer, FollowWriteSerializer, MeUserSerializer, RecipyIngredient, RecipyFavoriteWriteSerializer, UserSerializer, TagSerializer, RecipyReadSerializer, IngredientSerializer, RecipyWriteSerializer
-from django.db.models import Exists
-from django.db.models import OuterRef
-from .pagination import CustomPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, status
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.views import APIView
+
+from users.models import User, Follow
+from recipy.models import (Tag,
+                           Ingredient,
+                           Recipy,
+                           Favorite,
+                           ShoppingCart)
+from .permissions import IsAdminOrReadOnly
+from .serializers import (FollowReadSerializer,
+                          FollowWriteSerializer,
+                          MeUserSerializer,
+                          RecipyIngredient,
+                          RecipyFavoriteWriteSerializer,
+                          UserSerializer,
+                          TagSerializer,
+                          RecipyReadSerializer,
+                          IngredientSerializer,
+                          RecipyWriteSerializer)
+
+
 
 
 class TagViewSet(ModelViewSet):
@@ -36,8 +44,6 @@ class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
     permission_classes = (AllowAny,)
     queryset = Recipy.objects.all()
-    # filter_backends = (DjangoFilterBackend,)
-    # filterset_fields = ('tags', )
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -150,7 +156,7 @@ class UserViewSet(ModelViewSet):
         
     @action(
         detail=False,
-        methods=['get', 'patch'],
+        methods=['get',],
         permission_classes=[IsAuthenticated, ],
     )
     def me(self, request):
@@ -160,22 +166,8 @@ class UserViewSet(ModelViewSet):
             partial=True,
             context={'request': request})
         serializer.is_valid(raise_exception=True)
-        if request.method == 'PATCH':
-            serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=[IsAuthenticated, ],
-        url_path=r'subscriptions'
-    )
-    def subscriptions(self, request):
-        user_follower = User.objects.filter(following__user=request.user)
-        serializer = FollowReadSerializer(user_follower, many=True,)
-        queryset = self.paginate_queryset(serializer.data)
-        return self.get_paginated_response(queryset)
-    
     @action(
         detail=True,
         methods=['post', 'delete'],
@@ -194,3 +186,13 @@ class UserViewSet(ModelViewSet):
         serializer = FollowWriteSerializer(author)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class APIFollow(APIView, LimitOffsetPagination):
+    permission_classes=[IsAuthenticated, ]
+    def get(self, request):
+        user_follower = User.objects.filter(following__user=request.user)
+        serializer = FollowReadSerializer(user_follower, many=True,)
+        queryset = self.paginate_queryset(serializer.data, request)
+        return self.get_paginated_response(queryset)
+
+        

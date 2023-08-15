@@ -1,13 +1,11 @@
 from django.contrib import admin
 from .models import User, Follow
 
-
+@admin.register(User)
 class Users(admin.ModelAdmin):
-    pass
+    list_display = ("email", "username")
+    search_fields = ("email__startswith", "username__startswith")
 
-
+@admin.register(Follow)
 class Follows(admin.ModelAdmin):
     pass
-
-admin.site.register(User, Users)
-admin.site.register(Follow, Follows)

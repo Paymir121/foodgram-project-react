@@ -1,8 +1,10 @@
+@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
 
+###
 
-POST http://127.0.0.1:8000/api/recipes/2/favorite/
+POST http://127.0.0.1:8000/api/recipes/1/favorite/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: {{TOKEN}}
 
 {
 }
@@ -10,7 +12,7 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 ###
 DELETE http://127.0.0.1:8000/api/recipes/1/favorite/
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: {{TOKEN}}
 
 {
 }
@@ -18,7 +20,7 @@ Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
 ###
 get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_favorited=1
 Content-Type: application/json
-Authorization: Token 9fa29db2e36847390d1e7b3bc9e1ae51ef371c7b
+Authorization: {{TOKEN}}
 
 {
 }
