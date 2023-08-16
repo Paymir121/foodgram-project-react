@@ -5,8 +5,8 @@ POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
 {
-    "email": "nikox121@mail.ru",
-    "username": "nikox123@mail.ru",
+    "email": "nik3ox121@mail.ru",
+    "username": "nikox1323@mail.ru",
     "password": "456852Zx",
     "first_name": "kewk",
     "last_name": "wsq"
@@ -49,10 +49,3 @@ Authorization: {{TOKEN}}
 }
 
 
-###
-GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&author=1
-Content-Type: application/json
-Authorization: {{TOKEN}}
-
-{
-}

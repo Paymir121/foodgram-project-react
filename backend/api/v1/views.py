@@ -11,6 +11,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 
+from .filters import RecipyFilter
 from users.models import User, Follow
 from recipy.models import (Tag,
                            Ingredient,
@@ -40,10 +41,14 @@ class TagViewSet(ModelViewSet):
     serializer_class = TagSerializer
 
 
+
 class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
     permission_classes = (AllowAny,)
     queryset = Recipy.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipyFilter
+    http_method_names = ['get', 'post',]
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
@@ -57,15 +62,11 @@ class RecipyViewSet(ModelViewSet):
         queryset = Recipy.objects.all()
         is_favorited = self.request.query_params.get('is_favorited')
         author = self.request.query_params.get('author')
-        tags = self.request.query_params.get('tags')
         user = self.request.user
         if is_favorited:
             queryset = Recipy.objects.filter(favorites__user=user)
         if author:
             queryset = Recipy.objects.filter(author=author)
-        if tags:
-            print(tags)
-            queryset = Recipy.objects.filter(tags__slug=tags)
         return queryset
     
     @action(
@@ -140,8 +141,6 @@ class IngredientViewSet(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     serializer_class = IngredientSerializer
     queryset = Ingredient.objects.all()
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    search_fields = ('=name',)
 
 
 class UserViewSet(ModelViewSet):

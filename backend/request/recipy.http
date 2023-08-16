@@ -58,10 +58,27 @@ Authorization: {{TOKEN}}
   "cooking_time": 155
 }
 
+
 ###
-get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&tags=slug
+GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&author=1
 Content-Type: application/json
-Authorization:{{TOKEN}}
+Authorization: {{TOKEN}}
+
+{
+}
+
+###
+GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&tags=slug
+Content-Type: application/json
+Authorization: {{TOKEN}}
+
+{
+}
+
+###
+get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_favorited=1
+Content-Type: application/json
+Authorization: {{TOKEN}}
 
 {
 }

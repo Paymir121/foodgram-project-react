@@ -18,8 +18,8 @@ router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
 
 urlpatterns = [
     path('users/subscriptions/', APIFollow.as_view()),
-    path('', include('djoser.urls')),  
     path('', include(router_v1.urls)),
+    path('', include('djoser.urls')),  
     path('auth/', include('djoser.urls.authtoken')),
 
 ]
