@@ -5,7 +5,7 @@ POST http://127.0.0.1:8000/api/users/
 Content-Type: application/json
 
 {
-    "email": "nik3ox121@mail.ru",
+    "email": "nik3ox1e21@mail.ru",
     "username": "nikox1323@mail.ru",
     "password": "456852Zx",
     "first_name": "kewk",
@@ -28,7 +28,7 @@ Authorization: {{TOKEN}}
 
 {
 "new_password": "456852Zxы",
-"current_password": "456852Zx"
+"current_password": "456852Zxы"
 }
 
 ###

@@ -35,7 +35,7 @@ class RecipyTests(APITestCase):
                     1
                 ],
                     "name": "recicpy2",
-                    "image": null,
+                    # "image": null,
                     "text": "recipyvwqd",
                     "cooking_time": 34
                 }
