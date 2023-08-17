@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework.test import APIClient
@@ -6,6 +5,7 @@ from rest_framework.test import APIClient
 from api.v1.serializers import TagSerializer
 from users.models import User
 from recipy.models import Tag
+
 
 class TagTests(APITestCase):
 
@@ -18,12 +18,12 @@ class TagTests(APITestCase):
         )
         self.user.set_password("password")
         self.user.save()
-        self.tag1=Tag.objects.create(
+        self.tag1 = Tag.objects.create(
             name='tag_name1',
             color='color_tag1',
             slug="slug1"
         )
-        self.tag2=Tag.objects.create(
+        self.tag2 = Tag.objects.create(
             name='tag_name2',
             color='color_tag2',
             slug="slug2"
@@ -35,9 +35,15 @@ class TagTests(APITestCase):
         """Тест получение всех тагов"""
         url = "/api/tags/"
         response = self.client.get(url, format='json')
-        tag1_data = {'id': 1, 'name': 'tag_name1', 'color': 'color_tag1', 'slug': 'slug1'}
-        tag2_data = {'id': 2, 'name': 'tag_name2', 'color': 'color_tag2', 'slug': 'slug2'}
+        tag1_data = {'id': 1,
+                     'name': 'tag_name1',
+                     'color': 'color_tag1',
+                     'slug': 'slug1'}
+        tag2_data = {'id': 2,
+                     'name':
+                     'tag_name2',
+                     'color': 'color_tag2',
+                     'slug': 'slug2'}
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(TagSerializer(response.data[0]).data==tag1_data)
-        self.assertTrue(TagSerializer(response.data[1]).data==tag2_data)
-
+        self.assertTrue(TagSerializer(response.data[0]).data == tag1_data)
+        self.assertTrue(TagSerializer(response.data[1]).data == tag2_data)

@@ -1,13 +1,14 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
+# from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from api.v1.serializers import UserSerializer
+# from api.v1.serializers import UserSerializer
 from users.models import User
 
+
 class UserTests(APITestCase):
-    
+
     def setUp(self):
         self.user = User.objects.create(
             email="test@email.com",
@@ -30,18 +31,16 @@ class UserTests(APITestCase):
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
 
-
     def test_create_account(self):
         """Тестирование создание пользователя"""
         self.assertEqual(User.objects.count(), 2)
         url = "/api/users/"
         data = {
-                    "email": "mail@mail.ru",
-                    "username": "username",
-                    "password": "456852Zx",
-                    "first_name": "Nikita",
-                    "last_name": "Romanov"
-                }
+            "email": "mail@mail.ru",
+            "username": "username",
+            "password": "456852Zx",
+            "first_name": "Nikita",
+            "last_name": "Romanov"}
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 3)
@@ -49,14 +48,15 @@ class UserTests(APITestCase):
 
     def test_get_token(self):
         """Получение Токена"""
-        url = "/api/auth/token/login/"
-        data = {
-            "email": "test@email.com",
-            "password": "password"
-        }
+        # url = "/api/auth/token/login/"
+        # data = {
+        #     "email": "test@email.com",
+        #     "password": "password"
+        # }
         # token = Token.objects.get(user__username='testname')
         # response = self.client.post(url, data, format='json')
         # self.assertEqual(response.data['auth_token'])
+        pass
 
     def test_set_wrong_password(self):
         """Смена пароля с неправильным паролем"""
@@ -68,7 +68,7 @@ class UserTests(APITestCase):
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_set_right_password(self):  
+    def test_set_right_password(self):
         """Смена пароля с неправильным паролем"""
         url = "/api/users/set_password/"
         data = {
@@ -85,12 +85,11 @@ class UserTests(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.data['username'], self.user.username)
 
-    
     def test_get_list_users(self):
         """Получение данных о всех пользователях"""
         url = "/api/users/"
         response = self.client.get(url, format='json')
-        users = response.data['results']
+        # users = response.data['results']
         self.assertEqual(response.data['count'], 2)
         # print(UserSerializer(users[0]).data)
         # self.assertEqual(users[1], self.user.email)
@@ -104,4 +103,3 @@ class UserTests(APITestCase):
         # print(response.context['request'].user)
         # print(UserSerializer(response.data).data)
         self.assertEqual(response.data['email'], self.user.email)
-
