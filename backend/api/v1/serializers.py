@@ -135,12 +135,12 @@ class FollowReadSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         return True
-    
+
     def get_recipes(self, obj):
         recipes = Recipy.objects.filter(author=obj).order_by("-pub_date")
         serializers = FollowRecipeSerializer(recipes, many=True)
         return serializers.data
-    
+
     def get_recipes_count(self, obj):
         return Recipy.objects.filter(author=obj).count()
 
@@ -175,20 +175,20 @@ class RecipyReadSerializer(serializers.ModelSerializer):
                   "is_favorited",
                   "is_in_shopping_cart",
                   )
-    
+
     def get_is_favorited(self, obj):
         request = self.context.get('request')
         user = request.user
         favorited = Favorite.objects.filter(recipy=obj, user=user)
         return favorited.exists()
-        
+
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         user = request.user
         recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj,
                                                               user=user)
         return recipy_in_shopping_cart.exists()
-    
+
     def get_ingredients(self, obj):
         ingredients = obj.ingredients.values()
         for ingredient in ingredients:
@@ -253,5 +253,3 @@ class RecipyWriteSerializer(RecipyReadSerializer):
             ingredient_in_recipy.amount = amount
             ingredient_in_recipy.save()
         return super().update(instance, validated_data)
-    
-

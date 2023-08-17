@@ -1,12 +1,19 @@
 from django.contrib import admin
 
-from .models import Recipy, RecipyIngredient, RecipyTag, Tag, Ingredient, Favorite, ShoppingCart
+from .models import (Recipy,
+                     RecipyIngredient,
+                     RecipyTag,
+                     Tag,
+                     Ingredient,
+                     Favorite,
+                     ShoppingCart)
 
 admin.site.register(RecipyIngredient)
 admin.site.register(RecipyTag)
 admin.site.register(Tag)
 admin.site.register(Favorite)
 admin.site.register(ShoppingCart)
+
 
 @admin.register(Recipy)
 class Recipes(admin.ModelAdmin):
@@ -16,6 +23,7 @@ class Recipes(admin.ModelAdmin):
 
     def count_favorite(self, obj):
         return Recipy.objects.filter(favorites__recipy=obj).count()
+
 
 @admin.register(Ingredient)
 class Ingredient(admin.ModelAdmin):

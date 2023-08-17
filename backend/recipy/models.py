@@ -15,7 +15,7 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-    
+
     def __str__(self):
         return self.name
 
@@ -116,7 +116,7 @@ class Favorite(models.Model):
 
     def __str__(self) -> str:
         return f'{self.recipy}'
-    
+
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(

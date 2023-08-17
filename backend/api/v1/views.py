@@ -65,7 +65,7 @@ class RecipyViewSet(ModelViewSet):
         if author:
             queryset = Recipy.objects.filter(author=author)
         return queryset
-    
+
     @action(
         detail=True,
         methods=['post', 'delete'],
@@ -98,7 +98,7 @@ class RecipyViewSet(ModelViewSet):
             ShoppingCart.objects.create(recipy=recipy, user=user)
         serializer = RecipyFavoriteWriteSerializer(recipy)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
     @action(
         detail=False,
         methods=['get', ],
@@ -155,7 +155,7 @@ class UserViewSet(ModelViewSet):
     search_fields = ('=id',)
     http_method_names = ['get', 'post', 'patch', 'delete']
     pagination_class = LimitOffsetPagination
-        
+
     @action(
         detail=False,
         methods=['get', ],
@@ -213,5 +213,3 @@ class APISet_Password(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        
