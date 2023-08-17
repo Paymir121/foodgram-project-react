@@ -18,7 +18,7 @@ from recipy.models import (Tag,
                            Recipy,
                            Favorite,
                            ShoppingCart)
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsAdminOrReadOnly, IsAuthenticatednOrReadOnly
 from .serializers import (FollowReadSerializer,
                           FollowWriteSerializer,
                           MeUserSerializer,
@@ -44,7 +44,7 @@ class TagViewSet(ModelViewSet):
 
 class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatednOrReadOnly,)
     queryset = Recipy.objects.all().order_by('-pub_date')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipyFilter
