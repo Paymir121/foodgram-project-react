@@ -45,10 +45,10 @@ class TagViewSet(ModelViewSet):
 class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
     permission_classes = (AllowAny,)
-    queryset = Recipy.objects.all()
+    queryset = Recipy.objects.all().order_by('-pub_date')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipyFilter
-    http_method_names = ['get', 'post',]
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
