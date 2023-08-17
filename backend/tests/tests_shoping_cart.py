@@ -12,7 +12,6 @@ from recipy.models import (Tag,
 
 class ShopingCartTests(APITestCase):
 
-
     def test_post_shoping_cart(self):
         """Добавление рецепта в корзину"""
         url = "/api/recipes/1/shopping_cart/"

@@ -12,7 +12,6 @@ from recipy.models import (Tag,
 
 class FavoriteTests(APITestCase):
 
-
     def test_post_favorite(self):
         """Добавление в избранное"""
         url = "/api/recipes/1/favorite/"

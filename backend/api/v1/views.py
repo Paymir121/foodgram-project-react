@@ -194,4 +194,17 @@ class APIFollow(APIView, LimitOffsetPagination):
         queryset = self.paginate_queryset(serializer.data, request)
         return self.get_paginated_response(queryset)
 
+
+class APISet_Password(APIView):
+    permission_classes=[IsAuthenticated, ]
+    def post(self, request):
+        user = request.user
+        old_password = request.data['current_password']
+        new_password = request.data['new_password']
+        if user.check_password(old_password):
+            user.set_password(new_password)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         
