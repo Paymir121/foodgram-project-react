@@ -31,15 +31,12 @@ from .serializers import (FollowReadSerializer,
                           RecipyWriteSerializer)
 
 
-
-
 class TagViewSet(ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = None
     lookup_field = 'id'
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-
 
 
 class RecipyViewSet(ModelViewSet):
@@ -104,32 +101,38 @@ class RecipyViewSet(ModelViewSet):
     
     @action(
         detail=False,
-        methods=['get',],
+        methods=['get', ],
         permission_classes=[IsAuthenticated, ],
         url_path=r'download_shopping_cart'
     )
     def download_shopping_cart(self, request):
         user = get_object_or_404(User, username=self.request.user)
         shoping_carts = ShoppingCart.objects.filter(user=user)
-        ingredients_in_shopping_cart = (dict())
+        ingredients_in_cart = (dict())
+        headers_key = "Content-Disposition"
+        headers_value = 'attachment; filename="somefilename.csv"'
+        headers = {headers_key: headers_value}
         response = HttpResponse(content_type="text/csv",
-                        headers={"Content-Disposition": 'attachment; filename="somefilename.csv"'},)
+                                headers=headers,)
         writer = csv.writer(response)
         for shoping_cart in shoping_carts:
-            ingredients_in_recipy = RecipyIngredient.objects.filter(recipy=shoping_cart.recipy)
-            for ingredient_in_recipy in ingredients_in_recipy:
-                name = ingredient_in_recipy.ingredients.name
-                amount = ingredient_in_recipy.amount
-                measurement_unit = ingredient_in_recipy.ingredients.measurement_unit
+            ingredients_in_recipy = RecipyIngredient.objects.filter(
+                recipy=shoping_cart.recipy)
+            for ingredients in ingredients_in_recipy:
+                name = ingredients.ingredients.name
+                amount = ingredients.amount
+                measurement_unit = ingredients.ingredients.measurement_unit
 
-                if name not in ingredients_in_shopping_cart:
-                    ingredients_in_shopping_cart[name] = {'amount': amount,
-                                                        'measurement_unit': measurement_unit}
+                if name not in ingredients_in_cart:
+                    ingredients_in_cart[name] = {
+                        'amount': amount,
+                        'measurement_unit': measurement_unit}
                 else:
-                    ingredients_in_shopping_cart[name]['amount']  += amount
-        for name in ingredients_in_shopping_cart:
-            amount = ingredients_in_shopping_cart[name]['amount']
-            measurement_unit = ingredients_in_shopping_cart[name]['measurement_unit']
+                    ingredients_in_cart[name]['amount'] += amount
+        for name in ingredients_in_cart:
+            ingredient = ingredients_in_cart[name]
+            amount = ingredient['amount']
+            measurement_unit = ingredient['measurement_unit']
             writer.writerow([name, amount, measurement_unit])
         ShoppingCart.objects.filter(user=user).delete()
         return response
@@ -155,7 +158,7 @@ class UserViewSet(ModelViewSet):
         
     @action(
         detail=False,
-        methods=['get',],
+        methods=['get', ],
         permission_classes=[IsAuthenticated, ],
     )
     def me(self, request):
@@ -187,7 +190,9 @@ class UserViewSet(ModelViewSet):
 
 
 class APIFollow(APIView, LimitOffsetPagination):
-    permission_classes=[IsAuthenticated, ]
+
+    permission_classes = [IsAuthenticated, ]
+
     def get(self, request):
         user_follower = User.objects.filter(following__user=request.user)
         serializer = FollowReadSerializer(user_follower, many=True,)
@@ -196,7 +201,9 @@ class APIFollow(APIView, LimitOffsetPagination):
 
 
 class APISet_Password(APIView):
-    permission_classes=[IsAuthenticated, ]
+
+    permission_classes = [IsAuthenticated, ]
+
     def post(self, request):
         user = request.user
         old_password = request.data['current_password']

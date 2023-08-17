@@ -16,7 +16,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=150,)
     last_name = models.CharField(max_length=150,)
     password = models.CharField(max_length=150,)
-    email = models.EmailField(verbose_name='email address', max_length=254, unique=True)
+    email = models.EmailField(verbose_name='email address',
+                              max_length=254, unique=True)
 
     class Meta:
         constraints = [
@@ -51,7 +52,7 @@ class Follow(models.Model):
 
     def __str__(self) -> str:
         return f'{self.author}'
-    
+
     def clean(self):
         if self.user == self.author:
             raise ValidationError('Нельзя подписываться на самого себя')

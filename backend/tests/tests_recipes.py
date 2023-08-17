@@ -62,7 +62,7 @@
 #     def test_get_list_recipes_filter_tag(self):
 #         """Получение списка рецептов отфильтрованный по Тагам"""
 #         url = "/api/recipes/?page=1&limit=6&tags=slug"
-    
+
 #     def test_get_list_recipes_filter_author(self):
 #         """Получение списка рецептов отфильтрованный по авторам"""
 #         url = "/api/recipes/?page=1&limit=6&author=1"

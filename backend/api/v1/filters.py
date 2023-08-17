@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filter
- 
+
 from recipy.models import Recipy, Tag 
 
 
@@ -12,4 +12,4 @@ class RecipyFilter(filter.FilterSet):
 
     class Meta:
         model = Recipy
-        fields = ['tags',]
+        fields = ['tags', ]

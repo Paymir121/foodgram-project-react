@@ -36,6 +36,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ('id', 'name', 'measurement_unit')
 
+
 class MeUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -46,10 +47,12 @@ class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True, max_length=150)
     username = serializers.CharField(required=True,
                                      max_length=150,
-                                     validators=[ASCIIUsernameValidator(),])
+                                     validators=[ASCIIUsernameValidator(), ])
     first_name = serializers.CharField(required=True, max_length=150,)
     last_name = serializers.CharField(required=True, max_length=150,)
-    password = serializers.CharField(required=True, max_length=150, write_only=True)
+    password = serializers.CharField(required=True,
+                                     max_length=150,
+                                     write_only=True)
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -70,7 +73,6 @@ class UserSerializer(serializers.ModelSerializer):
             return Follow.objects.filter(author=obj, user=user).exists()
         return False
 
-    
     def create(self, validated_data):
         user = User(
             email=validated_data['email'],
@@ -183,14 +185,16 @@ class RecipyReadSerializer(serializers.ModelSerializer):
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get('request')
         user = request.user
-        recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj, user=user)
+        recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj,
+                                                              user=user)
         return recipy_in_shopping_cart.exists()
     
     def get_ingredients(self, obj):
         ingredients = obj.ingredients.values()
         for ingredient in ingredients:
-            amount = RecipyIngredient.objects.get(recipy=obj, ingredients=ingredient['id']).amount
-            ingredient['amount'] = amount
+            rec_in = RecipyIngredient.objects.get(recipy=obj,
+                                                  ingredients=ingredient['id'])
+            ingredient['amount'] = rec_in.amountt
         return ingredients
 
 
@@ -210,8 +214,9 @@ class RecipyWriteSerializer(RecipyReadSerializer):
         representation = super().to_representation(instance)
         ingredients = instance.ingredients.values()
         for ingredient in ingredients:
-            amount = RecipyIngredient.objects.get(recipy=instance, ingredients=ingredient['id']).amount
-            ingredient['amount'] = amount
+            rec_in = RecipyIngredient.objects.get(recipy=instance,
+                                                  ingredients=ingredient['id'])
+            ingredient['amount'] = rec_in.amount
         representation['ingredients'] = ingredients
         return representation
 
