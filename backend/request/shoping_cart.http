@@ -1,7 +1,7 @@
-@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
+@TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
 
 ###
-POST http://127.0.0.1:8000/api/recipes/2/shopping_cart/
+POST http://127.0.0.1:8000/api/recipes/1/shopping_cart/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 

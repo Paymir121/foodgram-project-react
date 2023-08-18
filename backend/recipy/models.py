@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from users.models import User
 
@@ -60,7 +61,9 @@ class Recipy(models.Model):
     ingredients = models.ManyToManyField(Ingredient,
                                          through='RecipyIngredient')
     tags = models.ManyToManyField(Tag, through='RecipyTag')
-    cooking_time = models.IntegerField()
+    cooking_time = models.IntegerField(validators=[
+        MaxValueValidator(100),
+        MinValueValidator(1)])
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -71,9 +74,15 @@ class Recipy(models.Model):
 
 
 class RecipyIngredient(models.Model):
-    recipy = models.ForeignKey(Recipy, on_delete=models.CASCADE)
-    ingredients = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    amount = models.IntegerField(default=1)
+    recipy = models.ForeignKey(Recipy,
+                               related_name='recipy_with_ingredients',
+                               on_delete=models.CASCADE)
+    ingredients = models.ForeignKey(Ingredient,
+                                    related_name='ingredients_in_recipy',
+                                    on_delete=models.CASCADE)
+    amount = models.IntegerField(default=1, validators=[
+        MaxValueValidator(9999),
+        MinValueValidator(1), ])
 
     class Meta:
         verbose_name = 'Ингредиент в рецепте'

@@ -1,4 +1,4 @@
-@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
+@TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
 
 ###
 POST http://127.0.0.1:8000/api/users/
@@ -17,8 +17,8 @@ POST http://127.0.0.1:8000/api/auth/token/login/
 Content-Type: application/json
 
 {
-    "email": "nikox121@mail.ru",
-    "password": "456852Zxы"
+    "email": "nik3ox1e21@mail.ru",
+    "password": "456852Zx"
 }
 
 ###
@@ -41,7 +41,7 @@ Authorization: {{TOKEN}}
 
 
 ###
-GET http://127.0.0.1:8000/api/users/2/ 
+GET http://127.0.0.1:8000/api/users/1/ 
 Content-Type: application/json
 Authorization: {{TOKEN}}
 

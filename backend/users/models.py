@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.exceptions import ValidationError
 
+
+# from recipy.models import Recipy
 from .validators import validator_username
 
 
@@ -18,6 +20,7 @@ class User(AbstractUser):
     password = models.CharField(max_length=150,)
     email = models.EmailField(verbose_name='email address',
                               max_length=254, unique=True)
+    # recipes = models.ManyToManyField(Recipy, through='UserRecipy')
 
     class Meta:
         constraints = [

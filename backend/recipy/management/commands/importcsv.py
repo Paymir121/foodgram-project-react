@@ -20,6 +20,6 @@ class Command(BaseCommand):
         csv_reader = get_reader("ingredients.csv")
         next(csv_reader)
         Ingredient.objects.bulk_create([Ingredient(
-            name=ingredeint['name'],
-            measurement_unit=ingredeint['measurement_unit'])
-            for ingredeint in csv_reader])
+            name=ingredient['name'],
+            measurement_unit=ingredient['measurement_unit'])
+            for ingredient in csv_reader])

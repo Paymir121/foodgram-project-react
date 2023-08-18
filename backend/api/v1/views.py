@@ -42,7 +42,7 @@ class TagViewSet(ModelViewSet):
 class RecipyViewSet(ModelViewSet):
     serializer_class = RecipyReadSerializer
     permission_classes = (IsAuthenticatednOrReadOnly,)
-    queryset = Recipy.objects.all().order_by('-pub_date')
+    queryset = Recipy.objects.order_by('-pub_date')
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipyFilter
     http_method_names = ['get', 'post', 'patch', 'delete']
@@ -59,11 +59,14 @@ class RecipyViewSet(ModelViewSet):
         queryset = Recipy.objects.all()
         is_favorited = self.request.query_params.get('is_favorited')
         author = self.request.query_params.get('author')
+        is_in_shopping_cart = self.request.query_params.get('is_in_shopping_cart')
         user = self.request.user
         if is_favorited:
             queryset = Recipy.objects.filter(favorites__user=user)
         if author:
             queryset = Recipy.objects.filter(author=author)
+        if is_in_shopping_cart:
+            queryset = Recipy.objects.filter(purchase__user=user)
         return queryset
 
     @action(
@@ -97,6 +100,8 @@ class RecipyViewSet(ModelViewSet):
         if request.method == 'POST':
             ShoppingCart.objects.create(recipy=recipy, user=user)
         serializer = RecipyFavoriteWriteSerializer(recipy)
+        # Убрать нельзя, так как по Redoc должен быть ответ
+        # в виде названия рецепта и времени готовки
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(
@@ -134,7 +139,6 @@ class RecipyViewSet(ModelViewSet):
             amount = ingredient['amount']
             measurement_unit = ingredient['measurement_unit']
             writer.writerow([name, amount, measurement_unit])
-        ShoppingCart.objects.filter(user=user).delete()
         return response
 
 
@@ -212,4 +216,5 @@ class APISet_Password(APIView):
             user.set_password(new_password)
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            context = {'error': 'Гуляй лесом, неправильный пароль'}
+            return Response(context, status=status.HTTP_400_BAD_REQUEST)

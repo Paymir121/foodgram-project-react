@@ -3,6 +3,7 @@ import base64
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.files.base import ContentFile
 from rest_framework import serializers
+from django.db import transaction
 
 from users.models import User, Follow
 from recipy.models import (Tag,
@@ -118,7 +119,7 @@ class FollowRecipeSerializer(serializers.ModelSerializer):
 
 class FollowReadSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
-    recipes = serializers.SerializerMethodField()
+    recipes = FollowRecipeSerializer(many=True)
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -135,11 +136,6 @@ class FollowReadSerializer(UserSerializer):
 
     def get_is_subscribed(self, obj):
         return True
-
-    def get_recipes(self, obj):
-        recipes = Recipy.objects.filter(author=obj).order_by("-pub_date")
-        serializers = FollowRecipeSerializer(recipes, many=True)
-        return serializers.data
 
     def get_recipes_count(self, obj):
         return Recipy.objects.filter(author=obj).count()
@@ -194,7 +190,7 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             rec_in = RecipyIngredient.objects.get(recipy=obj,
                                                   ingredients=ingredient['id'])
-            ingredient['amount'] = rec_in.amountt
+            ingredient['amount'] = rec_in.amount
         return ingredients
 
 
@@ -220,36 +216,26 @@ class RecipyWriteSerializer(RecipyReadSerializer):
         representation['ingredients'] = ingredients
         return representation
 
+    @transaction.atomic
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         recipy = Recipy.objects.create(**validated_data)
         recipy.tags.set(tags)
-        for ingredient in ingredients:
-            amount = ingredient.pop('amount')
-            current_ingredient = Ingredient.objects.get(id=ingredient['id'])
-            RecipyIngredient.objects.create(
-                ingredients=current_ingredient,
-                recipy=recipy,
-                amount=amount
-            )
+        RecipyIngredient.objects.bulk_create([RecipyIngredient(
+            ingredients=Ingredient(ingredient['id']),
+            recipy=recipy,
+            amount=ingredient['amount']) for ingredient in ingredients])
         return recipy
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
         instance.tags.set(tags)
-        for ingredient in ingredients:
-            amount = ingredient.pop('amount')
-            current_ingredient = Ingredient.objects.get(id=ingredient['id'])
-            RecipyIngredient.objects.update_or_create(
-                ingredients=current_ingredient,
-                recipy=instance,
-            )
-
-            ingredient_in_recipy = RecipyIngredient.objects.get(
-                ingredients=current_ingredient,
-                recipy=instance,)
-            ingredient_in_recipy.amount = amount
-            ingredient_in_recipy.save()
-        return super().update(instance, validated_data)
+        RecipyIngredient.objects.filter(recipy=instance,).delete()
+        RecipyIngredient.objects.bulk_create([RecipyIngredient(
+            ingredients=Ingredient(ingredient['id']),
+            recipy=instance,
+            amount=ingredient['amount']) for ingredient in ingredients])
+        return instance

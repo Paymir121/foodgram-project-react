@@ -1,4 +1,4 @@
-@TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
+@TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
 
 ###
 GET http://127.0.0.1:8000/api/recipes/
@@ -26,6 +26,10 @@ Authorization: {{TOKEN}}
     {
     "id": 1123,
     "amount": 10
+    },
+    {
+    "id": 13,
+    "amount": 10
     }
   ],
     "tags": [
@@ -45,8 +49,12 @@ Authorization: {{TOKEN}}
 {
   "ingredients": [
     {
-      "id": 2,
+      "id": 44,
       "amount": 13
+    },
+    {
+    "id": 13,
+    "amount": 10
     }
   ],
   "tags": [
@@ -77,6 +85,14 @@ Authorization: {{TOKEN}}
 
 ###
 get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_favorited=1
+Content-Type: application/json
+Authorization: {{TOKEN}}
+
+{
+}
+
+###
+get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_in_shopping_cart=1
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
