@@ -1,19 +1,19 @@
 import base64
 
-from django.db import transaction
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.files.base import ContentFile
+from django.db import transaction
 from rest_framework import serializers
 
-from users.models import User, Follow
 from recipy.models import (
-    Tag,
-    Recipy,
-    Ingredient,
-    RecipyIngredient,
     Favorite,
+    Ingredient,
+    Recipy,
+    RecipyIngredient,
     ShoppingCart,
+    Tag,
 )
+from users.models import Follow, User
 
 
 class Base64ImageField(serializers.ImageField):
