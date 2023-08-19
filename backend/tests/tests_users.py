@@ -60,16 +60,16 @@
 #     def test_set_wrong_password(self):
 #         """Смена пароля с неправильным паролем"""
 #         url = "/api/users/set_password/"
-        # data = {"new_password": "new_password",
-        #         "current_password": "wrong_password"}
+#         data = {"new_password": "new_password",
+#                 "current_password": "wrong_password"}
 #         response = self.client.post(url, data, format="json")
 #         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 #     def test_set_right_password(self):
 #         """Смена пароля с неправильным паролем"""
 #         url = "/api/users/set_password/"
-        # data = {"new_password": "new_password",
-        #         "current_password": "password"}
+#         data = {"new_password": "new_password",
+#                 "current_password": "password"}
 #         response = self.client.post(url, data, format="json")
 #         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 #         self.assertTrue(self.user.check_password(data["new_password"]))
