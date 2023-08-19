@@ -26,11 +26,15 @@ class User(AbstractUser):
     password = models.CharField(
         max_length=150,
     )
-    email = models.EmailField(verbose_name="email address", max_length=254, unique=True)
+    email = models.EmailField(
+        verbose_name="email address",
+        max_length=254, unique=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["username", "email"], name="unique_user")
+            models.UniqueConstraint(
+                fields=["username", "email"],
+                name="unique_user")
         ]
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"

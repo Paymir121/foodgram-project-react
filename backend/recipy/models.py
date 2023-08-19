@@ -75,10 +75,14 @@ class Recipy(models.Model):
 
 class RecipyIngredient(models.Model):
     recipy = models.ForeignKey(
-        Recipy, related_name="recipy_with_ingredients", on_delete=models.CASCADE
+        Recipy,
+        related_name="recipy_with_ingredients",
+        on_delete=models.CASCADE
     )
     ingredients = models.ForeignKey(
-        Ingredient, related_name="ingredients_in_recipy", on_delete=models.CASCADE
+        Ingredient,
+        related_name="ingredients_in_recipy",
+        on_delete=models.CASCADE
     )
     amount = models.IntegerField(
         default=1,

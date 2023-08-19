@@ -56,7 +56,9 @@ class UserSerializer(serializers.ModelSerializer):
         required=True,
         max_length=150,
     )
-    password = serializers.CharField(required=True, max_length=150, write_only=True)
+    password = serializers.CharField(required=True,
+                                     max_length=150,
+                                     write_only=True)
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
@@ -91,7 +93,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def validate(self, data):
-        if User.objects.filter(username=data["username"], email=data["email"]).exists():
+        if User.objects.filter(
+            username=data["username"],
+            email=data["email"]).exists():
             return data
         if User.objects.filter(username=data["username"]):
             raise serializers.ValidationError("такой user уже есть!")
@@ -165,7 +169,8 @@ class FollowReadSerializer(serializers.ModelSerializer):
         ]
 
     def get_recipes(self, obj):
-        recipes = Recipy.objects.filter(author=obj.author).order_by("-pub_date")
+        recipes = Recipy.objects.filter(
+            author=obj.author).order_by("-pub_date")
         serializers = BaseRecipeSerializer(recipes, many=True)
         return serializers.data
 
@@ -211,7 +216,9 @@ class RecipyReadSerializer(BaseRecipeSerializer):
     def get_is_in_shopping_cart(self, obj):
         request = self.context.get("request")
         user = request.user
-        recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj, user=user)
+        recipy_in_shopping_cart = ShoppingCart.objects.filter(
+            recipy=obj,
+            user=user)
         return recipy_in_shopping_cart.exists()
 
 
@@ -221,7 +228,9 @@ class IngredientWriteRecipySerializer(serializers.Serializer):
 
 
 class RecipyWriteSerializer(RecipyReadSerializer):
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(),
+        many=True)
     ingredients = IngredientWriteRecipySerializer(many=True)
     author = UserSerializer(
         required=False,
