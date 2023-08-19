@@ -1,4 +1,4 @@
-  
+
 ## Описание
 ### О проекте
 Галера Яндекс практикума по поднятию навыков работы с DRF
@@ -18,7 +18,7 @@ Nikki Nikonor и Яндекс Практикум
 
 ```bash
         git clone  git@github.com:Paymir121/foodgram-project-react.git
-``` 
+```
 
 ### Cоздать и активировать виртуальное окружение:
 ```
@@ -33,13 +33,13 @@ python -m venv venv
     source venv/scripts/activate
     ```
 ```
-
 ### Установить зависимости из файла requirements.txt:
 ```
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 ```
+
 
 ### Выполнить миграции:
 ```
@@ -85,7 +85,7 @@ python -m venv venv
 ### Выполнить Собрать статику Django:
 ```
         docker compose exec backend python manage.py collectstatic
-        docker compose exec backend cp -r /app/collected_static/. /backend_static/static/ 
+        docker compose exec backend cp -r /app/collected_static/. /backend_static/static/
 ```
 
 ### Выполнить добавление ингредиентов из csv-файла:
@@ -102,7 +102,7 @@ python -m venv venv
 
 ### Билдим проект и запускаем:
 ```
-        sudo docker compose -f docker-compose.production.yml up --build 
+        sudo docker compose -f docker-compose.production.yml up --build
 ```
 
 ### Выполнить миграции:
