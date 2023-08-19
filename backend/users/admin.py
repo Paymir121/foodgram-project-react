@@ -11,7 +11,7 @@ class Users(admin.ModelAdmin):
     def count_follower(self, obj):
         return User.objects.filter(follower__author=obj).count()
 
+
 @admin.register(Follow)
 class Follows(admin.ModelAdmin):
     list_display = ("user", "author",)
-
