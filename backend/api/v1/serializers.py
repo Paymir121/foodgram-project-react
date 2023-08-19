@@ -133,28 +133,37 @@ class BaseRecipeSerializer(serializers.ModelSerializer):
         return ingredients
 
 
-class FollowReadSerializer(UserSerializer):
+class FollowReadSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
-    recipes = BaseRecipeSerializer(many=True)
+    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
+    username = serializers.CharField(source="author.username")
+    email = serializers.CharField(source="author.email")
+    first_name = serializers.CharField(source="author.first_name")
+    last_name = serializers.CharField(source="author.last_name")
 
     class Meta:
-        model = User
-        fields = ['email',
+        model = Follow
+        fields = ['id',
                   'username',
-                  'password',
-                  'first_name',
-                  'last_name',
-                  'id',
                   'is_subscribed',
+                  'last_name',
+                  'first_name',
+                  'email',
                   "recipes",
-                  'recipes_count']
+                  'recipes_count'
+                  ]
+        
+    def get_recipes(self, obj): 
+        recipes = Recipy.objects.filter(author=obj.author).order_by("-pub_date") 
+        serializers = BaseRecipeSerializer(recipes, many=True) 
+        return serializers.data
 
     def get_is_subscribed(self, obj):
         return True
 
     def get_recipes_count(self, obj):
-        return Recipy.objects.filter(author=obj).count()
+        return Recipy.objects.filter(author=obj.author).count()
 
 
 class RecipyFavoriteWriteSerializer(serializers.ModelSerializer):

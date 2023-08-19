@@ -1,7 +1,7 @@
-@TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
-
+@TOKEN = Token 6c57c9e12e9d16bfd009fb5478e4f00748bcf2d3
+@HTTP_ADDRES = http://127.0.0.1:8088
 ###
-GET http://127.0.0.1:8000/api/users/subscriptions/
+GET {{HTTP_ADDRES}}/api/users/subscriptions/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -9,7 +9,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-POST http://127.0.0.1:8000/api/users/1/subscribe/
+POST {{HTTP_ADDRES}}/api/users/1/subscribe/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -17,7 +17,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-delete http://127.0.0.1:8000/api/users/2/subscribe/
+delete {{HTTP_ADDRES}}/api/users/2/subscribe/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 

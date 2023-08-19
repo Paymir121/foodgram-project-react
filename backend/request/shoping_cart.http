@@ -1,7 +1,7 @@
 @TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
-
+@HTTP_ADDRES = http://127.0.0.1:8088
 ###
-POST http://127.0.0.1:8000/api/recipes/1/shopping_cart/
+POST {{HTTP_ADDRES}}/api/recipes/1/shopping_cart/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -9,7 +9,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-DELETE http://127.0.0.1:8000/api/recipes/1/shopping_cart/
+DELETE {{HTTP_ADDRES}}/api/recipes/1/shopping_cart/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -17,7 +17,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-get http://127.0.0.1:8000/api/recipes/download_shopping_cart/
+get {{HTTP_ADDRES}}/api/recipes/download_shopping_cart/
 Authorization: {{TOKEN}}
 
 {

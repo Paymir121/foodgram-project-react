@@ -1,7 +1,7 @@
 @TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
-
+@HTTP_ADDRES = http://127.0.0.1:8088
 ###
-GET http://127.0.0.1:8000/api/ingredients/
+GET {{HTTP_ADDRES}}/api/ingredients/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 

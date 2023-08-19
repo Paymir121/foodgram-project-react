@@ -1,7 +1,7 @@
-@TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
-
+@TOKEN = Token 6c57c9e12e9d16bfd009fb5478e4f00748bcf2d3
+@HTTP_ADDRES = http://127.0.0.1:8088
 ###
-POST http://127.0.0.1:8000/api/users/
+POST {{HTTP_ADDRES}}/api/users/
 Content-Type: application/json
 
 {
@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://127.0.0.1:8000/api/auth/token/login/
+POST {{HTTP_ADDRES}}/api/auth/token/login/
 Content-Type: application/json
 
 {
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://127.0.0.1:8000/api/users/set_password/
+POST {{HTTP_ADDRES}}/api/users/set_password/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -32,7 +32,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-GET http://127.0.0.1:8000/api/users/me/ 
+GET {{HTTP_ADDRES}}/api/users/me/ 
 Content-Type: application/json
 Authorization: {{TOKEN}}
 

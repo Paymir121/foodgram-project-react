@@ -1,7 +1,8 @@
 @TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
+@HTTP_ADDRES = http://127.0.0.1:8088
 
 ###
-POST http://127.0.0.1:8000/api/recipes/1/favorite/
+POST {{HTTP_ADDRES}}/api/recipes/1/favorite/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -9,7 +10,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-DELETE http://127.0.0.1:8000/api/recipes/1/favorite/
+DELETE {{HTTP_ADDRES}}/api/recipes/1/favorite/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
