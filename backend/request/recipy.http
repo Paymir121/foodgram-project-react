@@ -1,7 +1,16 @@
 @TOKEN = Token 91a68e4a1a0dfb548a2c7c1da8fd49b62072bb7b
+@HTTP_ADDRES = http://127.0.0.1:8088
 
 ###
-GET http://127.0.0.1:8000/api/recipes/
+GET {{HTTP_ADDRES}}/api/recipes/
+Content-Type: application/json
+# Authorization: {{TOKEN}}
+
+{
+}
+
+###
+GET {{HTTP_ADDRES}}/api/recipes/1/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -9,15 +18,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-GET http://127.0.0.1:8000/api/recipes/1/
-Content-Type: application/json
-Authorization: {{TOKEN}}
-
-{
-}
-
-###
-Post http://127.0.0.1:8000/api/recipes/
+Post {{HTTP_ADDRES}}/api/recipes/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -42,7 +43,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-PATCH http://127.0.0.1:8000/api/recipes/3/
+PATCH {{HTTP_ADDRES}}/api/recipes/3/
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -68,7 +69,7 @@ Authorization: {{TOKEN}}
 
 
 ###
-GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&author=1
+GET {{HTTP_ADDRES}}/api/recipes/?page=1&limit=6&author=1
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -76,7 +77,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-GET http://127.0.0.1:8000/api/recipes/?page=1&limit=6&tags=slug
+GET {{HTTP_ADDRES}}/api/recipes/?page=1&limit=6&tags=slug
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -84,7 +85,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_favorited=1
+get {{HTTP_ADDRES}}/api/recipes/?page=1&limit=6&is_favorited=1
 Content-Type: application/json
 Authorization: {{TOKEN}}
 
@@ -92,7 +93,7 @@ Authorization: {{TOKEN}}
 }
 
 ###
-get http://127.0.0.1:8000/api/recipes/?page=1&limit=6&is_in_shopping_cart=1
+get {{HTTP_ADDRES}}/api/recipes/?page=1&limit=6&is_in_shopping_cart=1
 Content-Type: application/json
 Authorization: {{TOKEN}}
 

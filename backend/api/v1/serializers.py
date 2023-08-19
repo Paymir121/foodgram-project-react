@@ -103,23 +103,39 @@ class FollowWriteSerializer(UserSerializer):
         return obj.is_subscribed
 
 
-class FollowRecipeSerializer(serializers.ModelSerializer):
+class BaseRecipeSerializer(serializers.ModelSerializer):
+    tags = TagSerializer(required=True, many=True)
+    author = MeUserSerializer()
+    ingredients = serializers.SerializerMethodField()
     name = serializers.CharField(required=True, max_length=150,)
-    image = Base64ImageField(required=False, allow_null=True)
-    cooking_time = serializers.IntegerField()
+    image = Base64ImageField(required=True, allow_null=True)
+    text = serializers.CharField(required=True)
+    cooking_time = serializers.IntegerField(required=True)
 
     class Meta:
         model = Recipy
-        fields = ('id',
-                  'name',
-                  'image',
-                  'cooking_time',
-                  )
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'name',
+            'image',
+            'text',
+            'cooking_time',)
+
+    def get_ingredients(self, obj):
+        ingredients = obj.ingredients.values()
+        for ingredient in ingredients:
+            rec_in = RecipyIngredient.objects.get(recipy=obj,
+                                                  ingredients=ingredient['id'])
+            ingredient['amount'] = rec_in.amount
+        return ingredients
 
 
 class FollowReadSerializer(UserSerializer):
     is_subscribed = serializers.SerializerMethodField()
-    recipes = FollowRecipeSerializer(many=True)
+    recipes = BaseRecipeSerializer(many=True)
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -147,30 +163,25 @@ class RecipyFavoriteWriteSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class RecipyReadSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(required=True, many=True)
+class RecipyReadSerializer(BaseRecipeSerializer):
     author = UserSerializer()
-    ingredients = serializers.SerializerMethodField()
-    name = serializers.CharField(required=True, max_length=150,)
-    image = Base64ImageField(required=True, allow_null=True)
-    text = serializers.CharField(required=True)
-    cooking_time = serializers.IntegerField(required=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         model = Recipy
-        fields = ('id',
-                  'tags',
-                  'author',
-                  'ingredients',
-                  'name',
-                  'image',
-                  'text',
-                  'cooking_time',
-                  "is_favorited",
-                  "is_in_shopping_cart",
-                  )
+        fields = (
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'name',
+            'image',
+            'text',
+            'cooking_time',
+            "is_favorited",
+            "is_in_shopping_cart",
+            )
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -184,14 +195,6 @@ class RecipyReadSerializer(serializers.ModelSerializer):
         recipy_in_shopping_cart = ShoppingCart.objects.filter(recipy=obj,
                                                               user=user)
         return recipy_in_shopping_cart.exists()
-
-    def get_ingredients(self, obj):
-        ingredients = obj.ingredients.values()
-        for ingredient in ingredients:
-            rec_in = RecipyIngredient.objects.get(recipy=obj,
-                                                  ingredients=ingredient['id'])
-            ingredient['amount'] = rec_in.amount
-        return ingredients
 
 
 class IngredientWriteRecipySerializer(serializers.Serializer):

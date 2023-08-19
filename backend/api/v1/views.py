@@ -23,6 +23,7 @@ from .serializers import (FollowReadSerializer,
                           FollowWriteSerializer,
                           MeUserSerializer,
                           RecipyIngredient,
+                          BaseRecipeSerializer,
                           RecipyFavoriteWriteSerializer,
                           UserSerializer,
                           TagSerializer,
@@ -40,7 +41,7 @@ class TagViewSet(ModelViewSet):
 
 
 class RecipyViewSet(ModelViewSet):
-    serializer_class = RecipyReadSerializer
+    serializer_class = BaseRecipeSerializer
     permission_classes = (IsAuthenticatednOrReadOnly,)
     queryset = Recipy.objects.order_by('-pub_date')
     filter_backends = (DjangoFilterBackend,)
@@ -49,7 +50,10 @@ class RecipyViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
-            return RecipyReadSerializer
+            if self.request.user.is_authenticated:
+                return RecipyReadSerializer
+            else:
+                return BaseRecipeSerializer
         return RecipyWriteSerializer
 
     def perform_create(self, serializer):
@@ -198,7 +202,7 @@ class APIFollow(APIView, LimitOffsetPagination):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request):
-        user_follower = User.objects.filter(following__user=request.user)
+        user_follower = Follow.objects.filter(user=request.user)
         serializer = FollowReadSerializer(user_follower, many=True,)
         queryset = self.paginate_queryset(serializer.data, request)
         return self.get_paginated_response(queryset)

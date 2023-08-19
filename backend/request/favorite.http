@@ -1,7 +1,6 @@
 @TOKEN = Token 27abd72acd2b1ff8a69363c6e98f8217837fe59e
 
 ###
-
 POST http://127.0.0.1:8000/api/recipes/1/favorite/
 Content-Type: application/json
 Authorization: {{TOKEN}}
