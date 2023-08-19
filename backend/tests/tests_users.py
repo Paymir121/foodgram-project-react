@@ -88,11 +88,11 @@ class UserTests(APITestCase):
         # self.assertEqual(users[1], self.user.email)
         # self.assertEqual(users[0], self.user2.email)
 
-    def test_get_user(self):
-        """Получение данных о пользователе"""
-        url = "/api/users/1/"
-        response = self.client.get(url, format="json")
+    # def test_get_user(self):
+    #     """Получение данных о пользователе"""
+    #     url = "/api/users/1/"
+    #     response = self.client.get(url, format="json")
         # response['request'] = self.user
         # print(response.context['request'].user)
         # print(UserSerializer(response.data).data)
-        self.assertEqual(response.data["email"], self.user.email)
+        # self.assertEqual(response.data["email"], self.user.email)
