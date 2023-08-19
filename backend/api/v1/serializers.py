@@ -4,10 +4,9 @@ from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.files.base import ContentFile
 from django.db import transaction
 from rest_framework import serializers
-
+from users.models import Follow, User
 from recipy.models import (Favorite, Ingredient, Recipy, RecipyIngredient,
                            ShoppingCart, Tag)
-from users.models import Follow, User
 
 
 class Base64ImageField(serializers.ImageField):
@@ -94,8 +93,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if User.objects.filter(
-            username=data["username"],
-            email=data["email"]).exists():
+                username=data["username"], email=data["email"]).exists():
             return data
         if User.objects.filter(username=data["username"]):
             raise serializers.ValidationError("такой user уже есть!")

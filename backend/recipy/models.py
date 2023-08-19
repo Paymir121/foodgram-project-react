@@ -1,6 +1,5 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-
 from users.models import User
 
 
@@ -59,7 +58,9 @@ class Recipy(models.Model):
         verbose_name="Текст",
     )
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
-    ingredients = models.ManyToManyField(Ingredient, through="RecipyIngredient")
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through="RecipyIngredient")
     tags = models.ManyToManyField(Tag, through="RecipyTag")
     cooking_time = models.IntegerField(
         validators=[MaxValueValidator(100), MinValueValidator(1)]

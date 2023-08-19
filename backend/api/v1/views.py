@@ -10,9 +10,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-
-from recipy.models import Favorite, Ingredient, Recipy, ShoppingCart, Tag
 from users.models import Follow, User
+from recipy.models import Favorite, Ingredient, Recipy, ShoppingCart, Tag
 
 from .filters import RecipyFilter
 from .permissions import IsAdminOrReadOnly, IsAuthenticatednOrReadOnly
