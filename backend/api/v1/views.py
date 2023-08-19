@@ -16,19 +16,11 @@ from users.models import Follow, User
 
 from .filters import RecipyFilter
 from .permissions import IsAdminOrReadOnly, IsAuthenticatednOrReadOnly
-from .serializers import (
-    BaseRecipeSerializer,
-    FollowReadSerializer,
-    FollowWriteSerializer,
-    IngredientSerializer,
-    MeUserSerializer,
-    RecipyFavoriteWriteSerializer,
-    RecipyIngredient,
-    RecipyReadSerializer,
-    RecipyWriteSerializer,
-    TagSerializer,
-    UserSerializer,
-)
+from .serializers import (BaseRecipeSerializer, FollowReadSerializer,
+                          FollowWriteSerializer, IngredientSerializer,
+                          MeUserSerializer, RecipyFavoriteWriteSerializer,
+                          RecipyIngredient, RecipyReadSerializer,
+                          RecipyWriteSerializer, TagSerializer, UserSerializer)
 
 
 class TagViewSet(ModelViewSet):

@@ -5,14 +5,8 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from rest_framework import serializers
 
-from recipy.models import (
-    Favorite,
-    Ingredient,
-    Recipy,
-    RecipyIngredient,
-    ShoppingCart,
-    Tag,
-)
+from recipy.models import (Favorite, Ingredient, Recipy, RecipyIngredient,
+                           ShoppingCart, Tag)
 from users.models import Follow, User
 
 
