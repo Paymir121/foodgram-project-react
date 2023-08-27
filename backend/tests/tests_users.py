@@ -47,15 +47,15 @@ class UserTests(APITestCase):
 
     def test_get_token(self):
         """Получение Токена"""
-        # url = "/api/auth/token/login/"
-        # data = {
-        #     "email": "test@email.com",
-        #     "password": "password"
-        # }
+        url = "/api/auth/token/login/"
+        data = {
+            "email": "test@email.com",
+            "password": "password"
+        }
         # token = Token.objects.get(user__username='testname')
-        # response = self.client.post(url, data, format='json')
-        # self.assertEqual(response.data['auth_token'])
-        pass
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.data['auth_token'], 'kek')
+        # pass
 
     def test_set_wrong_password(self):
         """Смена пароля с неправильным паролем"""
